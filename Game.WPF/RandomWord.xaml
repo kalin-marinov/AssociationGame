@@ -1,0 +1,17 @@
+﻿<Window x:Class="AssociationGame.WPF.RandomWordWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AssociationGame.WPF"
+        mc:Ignorable="d"
+        Title="RandomWord" Height="300" Width="300">
+    <Grid>
+        <Label x:Name="wordLabel" Content="{Binding Word}" HorizontalAlignment="Left" Margin="93,62,0,0" VerticalAlignment="Top" Height="34" Width="79"/>
+        <Label x:Name="timerLabel" HorizontalAlignment="Left" Margin="93,119,0,0" VerticalAlignment="Top" Height="34" Width="79"/>
+        <Label x:Name="playerLabel" HorizontalAlignment="Left" Margin="93,28,0,0" VerticalAlignment="Top" Height="34" Width="79"/>
+        <Button x:Name="startBtn" Content="Start" HorizontalAlignment="Left" Margin="26,204,0,0" VerticalAlignment="Top" Width="104" Height="30" Click="startBtn_Click" />
+        <Button x:Name="guessBtn" Content="Guessed" HorizontalAlignment="Left" Margin="158,204,0,0" VerticalAlignment="Top" Width="104" Height="30" Click="guessBtn_Click" IsEnabled="False" />
+
+    </Grid>
+</Window>
