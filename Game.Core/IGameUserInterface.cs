@@ -3,6 +3,7 @@
     internal interface IGameUserInterface
     {
         int ReadPlayersCount();
-        object ReadPlayerWords();
+        PlayerData ReadPlayerWords();
+        bool HasGuessedWord(string randomPlayer, string randomWord);
     }
 }
