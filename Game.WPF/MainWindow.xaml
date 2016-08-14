@@ -5,22 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AssociationGame.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="380.372" Width="503.306">
+
     <Grid>
-        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="162" Margin="30,45,0,0" VerticalAlignment="Top" Width="460" ItemsSource="{Binding Path=CurrentWords, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" >
+        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="162" Margin="30,45,0,0" VerticalAlignment="Top" Width="460" ItemsSource="{Binding Path=PlayerVM.Words, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Path=.}" />
-                        <Button Content="Remove" Click="removeWord_Click" CommandParameter="{Binding Path=.}"  />
+                        <Button Content="Remove" Command="{Binding DataContext.PlayerVM.RemoveWordCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Path=.}"  />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox x:Name="wordBox" HorizontalAlignment="Left" Height="33" Margin="30,257,0,0" TextWrapping="Wrap" Text="Word" VerticalAlignment="Top" Width="240" />
-        <TextBox x:Name="nameBox" HorizontalAlignment="Left" Height="40" Margin="30,212,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="460"/>
-        <Button x:Name="addBtn" Content="Add" HorizontalAlignment="Left" Margin="275,257,0,0" VerticalAlignment="Top" Width="99" Height="33" Click="addBtn_Click" />
+        <TextBox x:Name="wordBox" HorizontalAlignment="Left" Height="33" Margin="30,257,0,0" TextWrapping="Wrap" Text="{Binding PlayerVM.CurrentWord, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Width="240" />
+        <TextBox x:Name="nameBox" Text="{Binding PlayerVM.PlayerName, Mode=TwoWay, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Height="40" Margin="30,212,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="460"/>
+        <Button x:Name="addBtn" Content="Add" HorizontalAlignment="Left" Margin="275,257,0,0" VerticalAlignment="Top" Width="99" Height="33" Command="{Binding PlayerVM.AddWordCommand}" CommandParameter="{Binding ElementName=wordBox, Path=Text}" />
         <Button x:Name="doneBtn" Content="Done" HorizontalAlignment="Left" Margin="391,257,0,0" VerticalAlignment="Top" Width="99" Height="33"  Click="doneBtn_Click" />
-
+        <Label Content="{Binding PlayerVM.Error}" Margin="30,295,14,10" Foreground="#FFE80202" />
     </Grid>
 </Window>

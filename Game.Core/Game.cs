@@ -8,11 +8,9 @@ namespace Game.Core
 {
     public class Game
     {
-        List<string> players = new List<string>();
-        List<string> words = new List<string>();
-        IDictionary<string, IList<string>> guessedWords;
 
         IGameUserInterface gameUI;
+        GameManager manager;
 
         public void Start()
         {
@@ -22,47 +20,28 @@ namespace Game.Core
             {
                 var playerInput = gameUI.ReadPlayerWords();
 
-                while (!AreValid(playerInput.Words))
+                while (!manager.IsValid(playerInput))
                 {
-                    // Try again:
+                    //gameUI.ShowValidationErrors();
                     playerInput = gameUI.ReadPlayerWords();
                 }
 
-                words.AddRange(playerInput.Words);
-                players.Add(playerInput.PlayerName);
+                manager.StorePlayerData(playerInput);
             }
 
             // Game start:
-            while (words.Count > 0)
+            while (manager.RemainingWordsCount > 0)
             {
-                var currentPlayer = GetNextPlayer();
-                var wordsGuessed = new List<string>();
-
-                // Game session
-                var randomWord = ChooseRandomWord();
+                var currentPlayer = manager.GetNextPlayer();
+                var randomWord = manager.ChooseRandomWord();
 
                 while (gameUI.HasGuessedWord(currentPlayer, randomWord))
                 {
-                    wordsGuessed.Add(randomWord);
-                    randomWord = ChooseRandomWord();
+                    manager.MarkAsGuessed(randomWord, currentPlayer);
+                    randomWord = manager.ChooseRandomWord();
                 }
             }
-
         }
 
-        private bool AreValid(IReadOnlyCollection<string> words)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string ChooseRandomWord()
-        {
-            throw new NotImplementedException();
-        }
-
-        private string GetNextPlayer()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -55,12 +55,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\RemoveItemCommand.cs" />
+    <Compile Include="Commands\AddItemCommand.cs" />
     <Compile Include="PlayerCount.xaml.cs">
       <DependentUpon>PlayerCount.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlayerInputViewModel.cs" />
     <Compile Include="RandomWord.xaml.cs">
       <DependentUpon>RandomWord.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Validation\PlayerInputValidation.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,6 +112,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Game.Core\Game.Core.csproj">
+      <Project>{ED5E0E07-72D3-4A5F-B3C4-73E924EC37E2}</Project>
+      <Name>Game.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
