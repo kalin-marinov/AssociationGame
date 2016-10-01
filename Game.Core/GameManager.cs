@@ -4,27 +4,43 @@ using System.Linq;
 
 namespace Game.Core
 {
+    /// <summary> Stores information about players in the game, words that are guessed or yet to be guessed </summary>
     public class GameManager
     {
         List<string> players = new List<string>();
         List<string> words = new List<string>();
-        IDictionary<string, IList<string>> guessedWords = new Dictionary<string, IList<string>>();
-
+        IDictionary<string, ISet<string>> guesses = new Dictionary<string, ISet<string>>();
         int? currentPlayerIndex;
 
         public int RemainingWordsCount => words.Count;
+
+        public IReadOnlyCollection<PlayerScore> Score
+        {
+            get
+            {
+                return guesses.Select(g =>
+                    new PlayerScore { PlayerName = g.Key, WordsGuessedCount = g.Value.Count }).ToArray();
+            }
+        }
+
+
 
         public void StorePlayerData(PlayerData playerData)
         {
             words.AddRange(playerData.Words);
             players.Add(playerData.PlayerName);
-            guessedWords.Add(playerData.PlayerName, new List<string>());
+            guesses.Add(playerData.PlayerName, new HashSet<string>());
         }
 
-        public virtual bool IsValid(PlayerData playerInput)
+        public virtual IEnumerable<string> GetValidationErrors(PlayerData playerInput)
         {
-            return players.Contains(playerInput.PlayerName)
-                || playerInput.Words.Any(word => words.Contains(word));
+            if (players.Contains(playerInput.PlayerName))
+                yield return "Player with that name already exists";
+
+            var duplicatedWords = playerInput.Words.Intersect(words);
+
+            if (duplicatedWords.Any())
+                yield return $"duplicated words: {string.Join(",", duplicatedWords)}";
         }
 
         public string ChooseRandomWord()
@@ -47,13 +63,17 @@ namespace Game.Core
 
         public void MarkAsGuessed(string word, string playerWhoGuessed)
         {
-            guessedWords[playerWhoGuessed].Add(word);
+            guesses[playerWhoGuessed].Add(word);
+            words.Remove(word);
         }
 
-        public IReadOnlyCollection<PlayerScore> GetScore()
+        public void Restart()
         {
-            return guessedWords.Select(i =>
-                new PlayerScore { PlayerName = i.Key, WordsGuessedCount = i.Value.Count }).ToArray();
+            words = guesses.SelectMany(g => g.Value).Union(words).ToList();
+            currentPlayerIndex = null;
+
+            foreach (var guess in guesses)
+                guess.Value.Clear();
         }
     }
 }

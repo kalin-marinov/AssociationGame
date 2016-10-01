@@ -6,7 +6,7 @@ namespace Game.Core
     {
         public string PlayerName { get; private set; }
 
-        public IReadOnlyCollection<string> Words { get; private set; }
+        public ISet<string> Words { get;  set; }
 
     }
 }

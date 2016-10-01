@@ -1,12 +1,11 @@
-﻿<Window x:Class="AssociationGame.WPF.MainWindow"
+﻿<Window x:Class="WhateverApp.PlayerInput"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AssociationGame.WPF"
+        xmlns:local="clr-namespace:WhateverApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="380.372" Width="503.306">
-
+        Title="PlayerInput" Height="340.594" Width="514.851">
     <Grid>
         <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="162" Margin="30,45,0,0" VerticalAlignment="Top" Width="460" ItemsSource="{Binding Path=PlayerVM.Words, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" >
             <ListBox.ItemTemplate>

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WhateverApp;
 
 namespace AssociationGame.WPF
 {
@@ -33,21 +34,13 @@ namespace AssociationGame.WPF
 
             PlayerVM = new PlayerInputViewModel { PlayerName = "Pesho" };
 
+            var window = new PlayerInput();
+            window.ShowDialog();
 
+            var vm = window.PlayerVM;
 
         }
 
-
-        private void addBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-
-            var word = wordBox.Text;
-            CurrentWords.Add(word);
-
-            if (CurrentWords.Count >= 5)
-                this.addBtn.IsEnabled = false;
-        }
 
         private void doneBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -98,11 +91,6 @@ namespace AssociationGame.WPF
             }
         }
 
-        private void removeWord_Click(object sender, RoutedEventArgs e)
-        {
-            CurrentWords.Remove((sender as Button).CommandParameter as string);
-            this.addBtn.IsEnabled = true;
-        }
 
         public int ReadPlayersCount()
         {
@@ -119,13 +107,17 @@ namespace AssociationGame.WPF
         public PlayerData ReadPlayerWords()
         {
             PlayerVM = new PlayerInputViewModel();
-
             return new PlayerData();
         }
 
         public bool HasGuessedWord(string randomPlayer, string randomWord)
         {
             throw new NotImplementedException();
+        }
+
+        public void DisplayErrors(IEnumerable<string> errors)
+        {
+            PlayerVM.Error = string.Join(",", errors);
         }
     }
 }

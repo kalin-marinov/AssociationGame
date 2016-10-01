@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using AssociationGame.Commands;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using WhateverApp;
@@ -34,7 +35,7 @@ namespace AssociationGame.WPF
         {
             Words = new ObservableCollection<string>();
             CurrentWord = "Word";
-            AddWordCommand = new AddItemCommand<string>(Words, _ => PlayerInputValidation.ValidateCurrentWord(this) == null);
+            AddWordCommand = new AddItemCommand<string>(this, _ =>  PlayerInputValidation.ValidateCurrentWord(this) == null);
             RemoveWordCommand = new RemoveItemCommand<string>(Words);
         }
 
@@ -68,5 +69,8 @@ namespace AssociationGame.WPF
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void ResetCurrentWord() => this.CurrentWord = "Word";
+
     }
 }

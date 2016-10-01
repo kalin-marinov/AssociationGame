@@ -60,6 +60,9 @@
     <Compile Include="PlayerCount.xaml.cs">
       <DependentUpon>PlayerCount.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlayerInput.xaml.cs">
+      <DependentUpon>PlayerInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlayerInputViewModel.cs" />
     <Compile Include="RandomWord.xaml.cs">
       <DependentUpon>RandomWord.xaml</DependentUpon>
@@ -78,6 +81,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PlayerCount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlayerInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

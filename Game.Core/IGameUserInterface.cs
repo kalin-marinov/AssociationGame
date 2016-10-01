@@ -1,4 +1,6 @@
-﻿namespace Game.Core
+﻿using System.Collections.Generic;
+
+namespace Game.Core
 {
     public interface IGameUserInterface
     {
@@ -7,5 +9,7 @@
         PlayerData ReadPlayerWords();
 
         bool HasGuessedWord(string randomPlayer, string randomWord);
+
+        void DisplayErrors(IEnumerable<string> errors);
     }
 }

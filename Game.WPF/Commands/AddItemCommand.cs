@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using AssociationGame.WPF;
+using System;
 using System.Windows.Input;
 
-namespace WhateverApp
+namespace AssociationGame.Commands
 {
     public class AddItemCommand<TItem> : ICommand
     {
-        private Collection<string> collection;
         private Func<TItem, bool> validationFunc;
+        private PlayerInputViewModel viewModel;
 
-        public AddItemCommand(Collection<string> collection, Func<TItem, bool> validationFunc)
+        public AddItemCommand(PlayerInputViewModel viewModel, Func<TItem, bool> validationFunc)
         {
-            this.collection = collection;
+            this.viewModel = viewModel;
             this.validationFunc = validationFunc;
         }
 
@@ -22,7 +22,8 @@ namespace WhateverApp
 
         public void Execute(object parameter)
         {
-            collection.Add((string)parameter);
+            viewModel.Words.Add((string)parameter);
+            viewModel.ResetCurrentWord();
         }
     }
 }
