@@ -1,29 +1,35 @@
-﻿using AssociationGame.WPF;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace AssociationGame.Commands
 {
     public class AddItemCommand<TItem> : ICommand
     {
-        private Func<TItem, bool> validationFunc;
-        private PlayerInputViewModel viewModel;
-
-        public AddItemCommand(PlayerInputViewModel viewModel, Func<TItem, bool> validationFunc)
-        {
-            this.viewModel = viewModel;
-            this.validationFunc = validationFunc;
-        }
-
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter) => validationFunc((TItem)parameter);
+        private ICollection<TItem> collection;
+        private int limit;
+        private Func<TItem, bool> validationFunction;
 
-
-        public void Execute(object parameter)
+        public AddItemCommand(ICollection<TItem> collection, Func<TItem, bool> validationFunction = null, int limit = int.MaxValue)
         {
-            viewModel.Words.Add((string)parameter);
-            viewModel.ResetCurrentWord();
+            this.collection = collection;
+            this.limit = limit;
+            this.validationFunction = validationFunction;
         }
+
+        public virtual bool CanExecute(object parameter)
+        {
+            var validItem = validationFunction?.Invoke((TItem)parameter) ?? true;
+            return validItem && collection.Count < limit;
+        }
+
+        public virtual void Execute(object parameter)
+           => collection.Add((TItem)parameter);
+        
+
+        /// <summary> Notifies the UI to re-check if the command can be executed </summary>
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

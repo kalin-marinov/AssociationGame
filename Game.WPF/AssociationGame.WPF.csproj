@@ -55,8 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\RemoveItemCommand.cs" />
     <Compile Include="Commands\AddItemCommand.cs" />
+    <Compile Include="Commands\RemoveItemCommand.cs" />
+    <Compile Include="Commands\AddWordCommand.cs" />
     <Compile Include="PlayerCount.xaml.cs">
       <DependentUpon>PlayerCount.xaml</DependentUpon>
     </Compile>
@@ -67,7 +68,6 @@
     <Compile Include="RandomWord.xaml.cs">
       <DependentUpon>RandomWord.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Validation\PlayerInputValidation.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

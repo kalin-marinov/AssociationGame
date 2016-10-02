@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using WhateverApp;
 
 namespace AssociationGame.WPF
@@ -19,7 +17,6 @@ namespace AssociationGame.WPF
 
         public Dictionary<string, List<string>> AllWords { get; set; }
 
-        private int playersCount;
 
         public PlayerInputViewModel PlayerVM { get; set; }
 
@@ -31,66 +28,9 @@ namespace AssociationGame.WPF
             this.DataContext = this;
 
 
-
-            PlayerVM = new PlayerInputViewModel { PlayerName = "Pesho" };
-
-            var window = new PlayerInput();
-            window.ShowDialog();
-
-            var vm = window.PlayerVM;
-
+            var game = new Game.Core.Game(this, new GameManager());
+            game.Start();
         }
-
-
-        private void doneBtn_Click(object sender, RoutedEventArgs e)
-        {
-            PlayerVM.Error = "Something's wrong";
-            return;
-
-            if (CurrentWords.Count < 5)
-                MessageBox.Show("You need five words to finish");
-
-            else if (CurrentWords.Count % 5 == 0)
-            {
-                addBtn.IsEnabled = true;
-                wordBox.Text = string.Empty;
-                AllWords.Add(nameBox.Text, new List<string>(CurrentWords));
-                CurrentWords.Clear();
-            }
-
-            if (AllWords.Count == playersCount)
-                StartGame();
-
-        }
-
-        private void StartGame()
-        {
-            var words = AllWords.SelectMany(x => x.Value).ToList();
-            var allPlayers = AllWords.Keys.ToList();
-            var playerIndex = new Random().Next(0, playersCount);
-            var player = allPlayers[playerIndex];
-
-            MessageBox.Show($"Starting player is {player}");
-
-            while (words.Count > 0)
-            {
-                var randomIndex = new Random().Next(0, words.Count);
-                var guessWindow = new RandomWordWindow(words[randomIndex], player);
-                var isGuessed = guessWindow.ShowDialog().GetValueOrDefault(false);
-
-                while (isGuessed)
-                {
-                    words.Remove(words[randomIndex]);
-                    randomIndex = new Random().Next(0, words.Count);
-                    guessWindow = new RandomWordWindow(words[randomIndex], player, guessWindow.RemainingTime);
-                    isGuessed = guessWindow.ShowDialog().GetValueOrDefault(false);
-                }
-
-                playerIndex = (playerIndex + 1) % playersCount;
-                player = allPlayers[playerIndex];
-            }
-        }
-
 
         public int ReadPlayersCount()
         {
@@ -106,8 +46,16 @@ namespace AssociationGame.WPF
 
         public PlayerData ReadPlayerWords()
         {
-            PlayerVM = new PlayerInputViewModel();
-            return new PlayerData();
+            var window = new PlayerInput();
+
+            while (window.ShowDialog() != true)
+            {
+                window = new PlayerInput();
+                window.ShowDialog();
+            }
+
+            var data = new PlayerData { PlayerName = window.PlayerVM.PlayerName, Words = new HashSet<string>(window.PlayerVM.Words) };
+            return data;
         }
 
         public bool HasGuessedWord(string randomPlayer, string randomWord)
@@ -116,8 +64,7 @@ namespace AssociationGame.WPF
         }
 
         public void DisplayErrors(IEnumerable<string> errors)
-        {
-            PlayerVM.Error = string.Join(",", errors);
-        }
+          =>  MessageBox.Show(string.Join(Environment.NewLine, errors));
+        
     }
 }

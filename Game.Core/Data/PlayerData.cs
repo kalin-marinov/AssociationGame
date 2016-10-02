@@ -4,9 +4,9 @@ namespace Game.Core
 {
     public class PlayerData
     {
-        public string PlayerName { get; private set; }
+        public string PlayerName { get; set; }
 
-        public ISet<string> Words { get;  set; }
+        public ISet<string> Words { get; set; }
 
     }
 }

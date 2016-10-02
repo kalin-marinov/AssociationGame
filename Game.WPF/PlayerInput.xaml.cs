@@ -10,17 +10,30 @@ namespace WhateverApp
     {
         public PlayerInputViewModel PlayerVM { get; private set; }
 
-        public PlayerInput()
+        public PlayerInput() : this(new PlayerInputViewModel { PlayerName = "PlayerName" })
+        {
+        }
+
+        public PlayerInput(PlayerInputViewModel viewModel)
         {
             InitializeComponent();
             this.DataContext = this;
-            PlayerVM = new PlayerInputViewModel { PlayerName = "Pesho" };
+            this.PlayerVM = viewModel;
         }
 
         private void doneBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            if (PlayerVM.Words.Count < PlayerVM.Validator.WordLimit)
+                MessageBox.Show("You need five words to finish");
+
+            else if (!PlayerVM.Validator.IsValid(PlayerVM.PlayerName))
+                MessageBox.Show("You need five words to finish");
+
+            else
+            {
+                this.DialogResult = true;
+                this.Close();
+            }
         }
     }
 }

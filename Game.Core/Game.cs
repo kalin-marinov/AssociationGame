@@ -27,6 +27,7 @@ namespace Game.Core
                 {
                     gameUI.DisplayErrors(validationErrors);
                     playerInput = gameUI.ReadPlayerWords();
+                    validationErrors = manager.GetValidationErrors(playerInput);
                 }
 
                 manager.StorePlayerData(playerInput);
