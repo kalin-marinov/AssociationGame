@@ -41,6 +41,7 @@ namespace AssociationGame.WPF
         public PlayerInputViewModel(GameInputValidator validator)
         {
             CurrentWord = "Word";
+            PlayerName = "Player";
             this.Validator = validator;
 
             Words = new ObservableCollection<string>();

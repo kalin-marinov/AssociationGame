@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\InputValidationException.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Data\GameManager.cs" />
     <Compile Include="IGameUserInterface.cs" />

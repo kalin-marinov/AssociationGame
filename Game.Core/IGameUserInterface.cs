@@ -6,7 +6,7 @@ namespace Game.Core
     {
         int ReadPlayersCount();
 
-        PlayerData ReadPlayerWords();
+        PlayerData ReadPlayerWords(int playerIndex);
 
         bool HasGuessedWord(string randomPlayer, string randomWord);
 

@@ -1,5 +1,5 @@
-﻿using Game.Core.Validation;
-using System.Linq;
+﻿using Game.Core.Exceptions;
+using System;
 
 namespace Game.Core
 {
@@ -7,13 +7,11 @@ namespace Game.Core
     {
         IGameUserInterface gameUI;
         GameManager manager;
-        GameInputValidator validator;
 
-        public Game(IGameUserInterface gameUI, GameManager manager, GameInputValidator validator)
+        public Game(IGameUserInterface gameUI, GameManager manager)
         {
             this.gameUI = gameUI;
             this.manager = manager;
-            this.validator = validator;
         }
         
         public void Start()
@@ -23,17 +21,11 @@ namespace Game.Core
             // Read input from all players:
             for (int i = 0; i < playersCount; i++)
             {
-                var playerInput = gameUI.ReadPlayerWords();
-                var validationErrors = validator.PlayerInputValidationErrors(playerInput, manager.Words, manager.Players);
-
-                while (validationErrors.Any())
+                TryUntilSuccess(gameUI, () =>
                 {
-                    gameUI.DisplayErrors(validationErrors);
-                    playerInput = gameUI.ReadPlayerWords();
-                    validationErrors = validator.PlayerInputValidationErrors(playerInput, manager.Words, manager.Players);
-                }
-
-                manager.StorePlayerData(playerInput);
+                    var playerInput = gameUI.ReadPlayerWords(i);
+                    manager.StorePlayerData(playerInput);
+                });
             }
 
             // Game start:
@@ -50,5 +42,25 @@ namespace Game.Core
             }
         }
 
+        /// <summary> Executes an action until it succeeds and reports errors to the given user interface </summary>
+        private void TryUntilSuccess(IGameUserInterface ui, Action action)
+        {
+            while (true)
+            {
+                try
+                {
+                    action();
+                    return;
+                }
+                catch (InputValidationException ex)
+                {
+                    ui.DisplayErrors(ex.Errors);
+                }
+                catch (Exception ex)
+                {
+                    ui.DisplayErrors(new[] { ex.Message });
+                }
+            }
+        }
     }
 }

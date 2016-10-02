@@ -31,7 +31,7 @@ namespace Game.Core.Validation
             if (string.IsNullOrWhiteSpace(playerName))
                 yield return "Player name cannot be empty";
 
-            if (playerName.Any(c=> !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+            else if (playerName.Any(c=> !char.IsLetter(c) && !char.IsWhiteSpace(c)))
                 yield return "Player should consists only letters and whitespaces";
         }
 

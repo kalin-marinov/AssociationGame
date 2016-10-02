@@ -13,22 +13,13 @@ namespace AssociationGame.WPF
     public partial class MainWindow : Window, IGameUserInterface
     {
 
-        public ObservableCollection<string> CurrentWords { get; set; }
-
-        public Dictionary<string, List<string>> AllWords { get; set; }
-
-
         public PlayerInputViewModel PlayerVM { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            CurrentWords = new ObservableCollection<string>();
-            AllWords = new Dictionary<string, List<string>>();
-            this.DataContext = this;
 
-
-            var game = new Game.Core.Game(this, new GameManager(), new Game.Core.Validation.GameInputValidator());
+            var game = new Game.Core.Game(this, new GameManager(new Game.Core.Validation.GameInputValidator()));
             game.Start();
         }
 
@@ -44,9 +35,20 @@ namespace AssociationGame.WPF
             throw new ArgumentException();
         }
 
-        public PlayerData ReadPlayerWords()
+
+        PlayerInputViewModel playerInput = new PlayerInputViewModel();
+        int lastPlayerIndex = 0;
+
+        public PlayerData ReadPlayerWords(int playerIndex)
         {
-            var window = new PlayerInput();
+            // If it's a new player, prepare a brand new view model
+            if (playerIndex != lastPlayerIndex)
+            {
+                lastPlayerIndex = playerIndex;
+                playerInput = new PlayerInputViewModel();
+            }
+
+            var window = new PlayerInput(playerInput);
 
             while (window.ShowDialog() != true)
             {
