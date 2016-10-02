@@ -36,7 +36,7 @@ namespace AssociationGame.WPF
 
         public GameInputValidator Validator { get; private set; }
 
-        public ObservableCollection<string> Words { get; private set; }
+        public ObservableCollection<string> Words { get; set; }
 
         public PlayerInputViewModel(GameInputValidator validator)
         {

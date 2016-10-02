@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Game.Core.Validation;
+using System.Linq;
 
 namespace Game.Core
 {
@@ -6,11 +7,13 @@ namespace Game.Core
     {
         IGameUserInterface gameUI;
         GameManager manager;
+        GameInputValidator validator;
 
-        public Game(IGameUserInterface gameUI, GameManager manager)
+        public Game(IGameUserInterface gameUI, GameManager manager, GameInputValidator validator)
         {
             this.gameUI = gameUI;
             this.manager = manager;
+            this.validator = validator;
         }
         
         public void Start()
@@ -21,13 +24,13 @@ namespace Game.Core
             for (int i = 0; i < playersCount; i++)
             {
                 var playerInput = gameUI.ReadPlayerWords();
-                var validationErrors = manager.GetValidationErrors(playerInput);
+                var validationErrors = validator.PlayerInputValidationErrors(playerInput, manager.Words, manager.Players);
 
                 while (validationErrors.Any())
                 {
                     gameUI.DisplayErrors(validationErrors);
                     playerInput = gameUI.ReadPlayerWords();
-                    validationErrors = manager.GetValidationErrors(playerInput);
+                    validationErrors = validator.PlayerInputValidationErrors(playerInput, manager.Words, manager.Players);
                 }
 
                 manager.StorePlayerData(playerInput);

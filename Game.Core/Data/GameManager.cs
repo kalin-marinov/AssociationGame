@@ -7,73 +7,65 @@ namespace Game.Core
     /// <summary> Stores information about players in the game, words that are guessed or yet to be guessed </summary>
     public class GameManager
     {
-        List<string> players = new List<string>();
-        List<string> words = new List<string>();
-        IDictionary<string, ISet<string>> guesses = new Dictionary<string, ISet<string>>();
+        public List<string> Players { get; private set; } = new List<string>();
+
+        public List<string> Words { get; private set; } = new List<string>();
+
+        IDictionary<string, ISet<string>> playersGuesses = new Dictionary<string, ISet<string>>();
         int? currentPlayerIndex;
 
-        public int RemainingWordsCount => words.Count;
+        public int RemainingWordsCount => Words.Count;
 
         public IReadOnlyCollection<PlayerScore> Score
         {
             get
             {
-                return guesses.Select(g =>
+                return playersGuesses.Select(g =>
                     new PlayerScore { PlayerName = g.Key, WordsGuessedCount = g.Value.Count }).ToArray();
             }
         }
 
 
-
         public void StorePlayerData(PlayerData playerData)
         {
-            words.AddRange(playerData.Words);
-            players.Add(playerData.PlayerName);
-            guesses.Add(playerData.PlayerName, new HashSet<string>());
+            Words.AddRange(playerData.Words);
+            Players.Add(playerData.PlayerName);
+            playersGuesses.Add(playerData.PlayerName, new HashSet<string>());
         }
 
-        public virtual IEnumerable<string> GetValidationErrors(PlayerData playerInput)
-        {
-            if (players.Contains(playerInput.PlayerName))
-                yield return "Player with that name already exists";
-
-            var duplicatedWords = playerInput.Words.Intersect(words);
-
-            if (duplicatedWords.Any())
-                yield return $"duplicated words: {string.Join(",", duplicatedWords)}";
-        }
 
         public string ChooseRandomWord()
         {
             var random = new Random();
-            var randIndex = random.Next(0, words.Count);
-            return words[randIndex];
+            var randIndex = random.Next(0, Words.Count);
+            return Words[randIndex];
         }
 
         public string GetNextPlayer()
         {
             if (currentPlayerIndex.HasValue)
-                currentPlayerIndex++;
+                currentPlayerIndex = currentPlayerIndex++ % Players.Count;
 
             else
-                currentPlayerIndex = new Random().Next(0, players.Count);
+                currentPlayerIndex = new Random().Next(0, Players.Count);
 
-            return players[currentPlayerIndex.Value];
+            return Players[currentPlayerIndex.Value];
         }
 
         public void MarkAsGuessed(string word, string playerWhoGuessed)
         {
-            guesses[playerWhoGuessed].Add(word);
-            words.Remove(word);
+            playersGuesses[playerWhoGuessed].Add(word);
+            Words.Remove(word);
         }
 
         public void Restart()
         {
-            words = guesses.SelectMany(g => g.Value).Union(words).ToList();
+            // Transfer all words back to the initial words collection
+            Words = Words.Union(playersGuesses.SelectMany(g => g.Value)).ToList();
             currentPlayerIndex = null;
 
-            foreach (var guess in guesses)
-                guess.Value.Clear();
+            foreach (var playerGuesses in playersGuesses)
+                playerGuesses.Value.Clear();
         }
     }
 }

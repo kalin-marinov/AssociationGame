@@ -28,7 +28,7 @@ namespace AssociationGame.WPF
             this.DataContext = this;
 
 
-            var game = new Game.Core.Game(this, new GameManager());
+            var game = new Game.Core.Game(this, new GameManager(), new Game.Core.Validation.GameInputValidator());
             game.Start();
         }
 
@@ -50,7 +50,7 @@ namespace AssociationGame.WPF
 
             while (window.ShowDialog() != true)
             {
-                window = new PlayerInput();
+                window = new PlayerInput(window.PlayerVM);
                 window.ShowDialog();
             }
 
@@ -60,7 +60,8 @@ namespace AssociationGame.WPF
 
         public bool HasGuessedWord(string randomPlayer, string randomWord)
         {
-            throw new NotImplementedException();
+            var window = new RandomWordWindow(randomWord, randomPlayer);
+            return window.ShowDialog() == true;
         }
 
         public void DisplayErrors(IEnumerable<string> errors)
