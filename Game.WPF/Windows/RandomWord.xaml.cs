@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Media;
 using System.Timers;
 using System.Windows;
@@ -29,6 +28,7 @@ namespace AssociationGame.WPF
             this.timerLabel.Content = RemainingTime.ToString();
             this.playerLabel.Content = playerName;
             this.DataContext = this;
+
             this.timer = new Timer(1000);
             timer.Elapsed += Timer_Elapsed;
           

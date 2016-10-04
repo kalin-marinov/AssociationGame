@@ -4,14 +4,13 @@ using System.Linq;
 
 namespace Game.Core.Validation
 {
-    public class GameInputValidator
+    public class GameInputValidator : IGameInputValidator
     {
-        public int WordLimit { get; protected set; } = 5;
+        public virtual int WordsRequired { get; protected set; } = 5;
 
         private StringComparer IgnoreCase => StringComparer.CurrentCultureIgnoreCase;
 
-        /// <summary> Validates the given word based on the existing words for the player and returns all errors as a <see cref="string"/> collection </summary>
-        /// <returns> a collection of errors represented as <see cref="string"/> </returns>
+
         public virtual IEnumerable<string> WordValidationErrors(string word, IEnumerable<string> otherPlayerWords)
         {
             if (string.IsNullOrWhiteSpace(word))
@@ -25,7 +24,6 @@ namespace Game.Core.Validation
         }
 
 
-        /// <summary> Validates player name and returns errors as a <see cref="string"/> collection </summary>
         public virtual IEnumerable<string> PlayerNameValidationErrors(string playerName)
         {
             if (string.IsNullOrWhiteSpace(playerName))
@@ -36,12 +34,11 @@ namespace Game.Core.Validation
         }
 
 
-        /// <summary> Validates the given player input based on the other player names and words | returns all errors as a <see cref="string"/> collection </summary>
-        /// <returns> a collection of errors represented as <see cref="string"/> </returns>
+
         public virtual IEnumerable<string> PlayerInputValidationErrors(PlayerData playerInput, IEnumerable<string> existingWords, IEnumerable<string> existingPlayers)
         {
-            if (playerInput.Words.Count > WordLimit)
-                yield return $"You cannot have more than {WordLimit} words";
+            if (playerInput.Words.Count > WordsRequired)
+                yield return $"You cannot have more than {WordsRequired} words";
 
             if (existingPlayers.Contains(playerInput.PlayerName, IgnoreCase))
                 yield return "Player with that name already exists";
@@ -52,12 +49,11 @@ namespace Game.Core.Validation
                 yield return $"duplicated words: {string.Join(",", duplicatedWords)}";
         }
 
-        /// <summary> Determines whether there are any validation errors for a given word based on the rest of the player's words </summary>
         public virtual bool IsValid(string word, IEnumerable<string> otherPlayerWord)
             => !WordValidationErrors(word, otherPlayerWord).Any();
 
 
-        /// <summary> Determines whether there are any valdation errors for a playerinput, based on other player names and words </summary>
+
         public virtual bool IsValid(PlayerData playerInput, IEnumerable<string> existingWords, IEnumerable<string> existingPlayer)
             => !PlayerInputValidationErrors(playerInput, existingWords, existingPlayer).Any();
 

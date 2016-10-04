@@ -7,8 +7,8 @@
     <ProjectGuid>{F60FF6AB-B8FF-4C1E-8C0E-E1C0B12E88EE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WhateverApp</RootNamespace>
-    <AssemblyName>WhateverApp</AssemblyName>
+    <RootNamespace>AssociationGame.WPF</RootNamespace>
+    <AssemblyName>AssociationGame.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -56,39 +56,32 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\AddItemCommand.cs" />
+    <Compile Include="Commands\CollectionDoneCommand.cs" />
     <Compile Include="Commands\RemoveItemCommand.cs" />
     <Compile Include="Commands\AddWordCommand.cs" />
-    <Compile Include="PlayerCount.xaml.cs">
+    <Compile Include="Windows\PlayerCount.xaml.cs">
       <DependentUpon>PlayerCount.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlayerInput.xaml.cs">
+    <Compile Include="Windows\PlayerInput.xaml.cs">
       <DependentUpon>PlayerInput.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlayerInputViewModel.cs" />
-    <Compile Include="RandomWord.xaml.cs">
+    <Compile Include="ViewModels\PlayerInputViewModel.cs" />
+    <Compile Include="Windows\RandomWord.xaml.cs">
       <DependentUpon>RandomWord.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="PlayerCount.xaml">
+    <Page Include="Windows\PlayerCount.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PlayerInput.xaml">
+    <Page Include="Windows\PlayerInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RandomWord.xaml">
+    <Page Include="Windows\RandomWord.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

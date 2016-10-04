@@ -16,7 +16,6 @@ namespace AssociationGame.WPF
             set { playerName = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlayerName")); }
         }
 
-
         private string currentWord;
 
         public string CurrentWord
@@ -32,13 +31,15 @@ namespace AssociationGame.WPF
 
         public AddWordCommand AddWordCommand { get; private set; }
 
-        public ICommand RemoveWordCommand { get; private set; }
+        public RemoveItemCommand<string> RemoveWordCommand { get; private set; }
 
-        public GameInputValidator Validator { get; private set; }
+        public CollectionDoneCommand DoneCommand { get; set; }
+
+        public IGameInputValidator Validator { get; private set; }
 
         public ObservableCollection<string> Words { get; set; }
 
-        public PlayerInputViewModel(GameInputValidator validator)
+        public PlayerInputViewModel(IGameInputValidator validator)
         {
             CurrentWord = "Word";
             PlayerName = "Player";
@@ -46,7 +47,11 @@ namespace AssociationGame.WPF
 
             Words = new ObservableCollection<string>();
             AddWordCommand = new AddWordCommand(this, validator);
-            RemoveWordCommand = new RemoveItemCommand<string>(Words, AddWordCommand);
+            RemoveWordCommand = new RemoveItemCommand<string>(Words);
+            DoneCommand = new CollectionDoneCommand(Words, Validator.WordsRequired);
+
+            RemoveWordCommand.OnExecuted += (sender, args) => { AddWordCommand.RaiseCanExecuteChanged(); DoneCommand.RaiseCanExecuteChanged(); };
+            AddWordCommand.OnExecuted += (sender, args) => DoneCommand.RaiseCanExecuteChanged();
         }
 
         public PlayerInputViewModel() : this(new GameInputValidator())

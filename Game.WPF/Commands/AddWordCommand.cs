@@ -5,11 +5,11 @@ namespace AssociationGame.Commands
 {
     public class AddWordCommand : AddItemCommand<string>
     {
-        private GameInputValidator validator;
+        private IGameInputValidator validator;
         private PlayerInputViewModel viewModel;
 
-        public AddWordCommand(PlayerInputViewModel viewModel, GameInputValidator validator) :
-            base(viewModel.Words, word => validator.IsValid(word, viewModel.Words), validator.WordLimit)
+        public AddWordCommand(PlayerInputViewModel viewModel, IGameInputValidator validator) :
+            base(viewModel.Words, word => validator.IsValid(word, viewModel.Words), validator.WordsRequired)
         {
             this.viewModel = viewModel;
             this.validator = validator;

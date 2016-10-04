@@ -7,9 +7,9 @@ using System.Linq;
 namespace Game.Core
 {
     /// <summary> Stores information about players in the game, words that are guessed or yet to be guessed </summary>
-    public class GameManager
+    public class GameDataStorage : IGameDataStorage
     {
-        private GameInputValidator validator;
+        private IGameInputValidator validator;
 
         List<string> players;
         List<string> words;
@@ -27,7 +27,7 @@ namespace Game.Core
             }
         }
 
-        public GameManager(GameInputValidator validator)
+        public GameDataStorage(IGameInputValidator validator)
         {
             this.validator = validator;
             this.playersGuesses = new Dictionary<string, ISet<string>>();
@@ -36,9 +36,6 @@ namespace Game.Core
         }
 
 
-        /// <summary> Validates and stores the given player input </summary>
-        /// <exception cref="InputValidationException" />
-        /// <exception cref="NullReferenceException" />
         public void StorePlayerData(PlayerData playerData)
         {
             var validationErrors = validator.PlayerInputValidationErrors(playerData, words, players);
@@ -76,7 +73,7 @@ namespace Game.Core
             words.Remove(word);
         }
 
-        public void Restart()
+        public void ResetData()
         {
             // Transfer all words back to the initial words collection
             words = words.Union(playersGuesses.SelectMany(g => g.Value)).ToList();
