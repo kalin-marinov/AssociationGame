@@ -1,24 +1,15 @@
-<section id="scores">
-   
- <table>
-    <tr>
-        <th> Player 1 </th>
-        <th> Player 2 </th>
-        <th> Score </th>
-    </tr>        
-
+<table>
     @foreach (var team in Scores)
     {
         <tr>
             <td> @team.Player1.Name </td>
+            <td> & </td>
             <td> @team.Player2.Name </td>
-            <td> @team.Score </td>
+            <td> - @team.Score </td>
         </tr>
     }
 
  </table>
-
-</section>
 
 @functions {
     [Parameter]

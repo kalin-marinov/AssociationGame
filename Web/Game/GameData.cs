@@ -9,14 +9,14 @@ public class GameData
 {
     public readonly int WORDS_PER_PLAYER = 5;
 
-    private Dictionary<string, List<string>> wordsByPlayer;
+    private Dictionary<string, HashSet<string>> wordsByPlayer;
 
     private Dictionary<string, Player> players;
 
     public GameData()
     {
         this.players = new Dictionary<string, Player>();
-        this.wordsByPlayer = new Dictionary<string, List<string>>();
+        this.wordsByPlayer = new Dictionary<string, HashSet<string>>();
     }
 
     public void AddPlayer(string name)
@@ -29,7 +29,7 @@ public class GameData
         var player = this.players[playerName];
 
         if (!this.wordsByPlayer.ContainsKey(player.Name))
-            this.wordsByPlayer[player.Name] = new List<string>();
+            this.wordsByPlayer[player.Name] = new HashSet<string>();
 
         if (this.wordsByPlayer[player.Name].Count >= WORDS_PER_PLAYER)
             throw new InvalidOperationException($"Player {playerName} already has {WORDS_PER_PLAYER} words!");

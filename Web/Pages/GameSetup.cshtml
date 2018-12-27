@@ -1,49 +1,62 @@
 @page "/setup"
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 @inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<h1>Game setup</h1>
+<section id="setup">
+    <section id="players">
+        <h1> Players </h1>
+        <h2> </h2>
 
-<section>
-    <h2> Add player </h2>
-    <input bind="@newPlayerName" placeholder="Player name" />
-    <button onclick="@AddPlayer"> Add </button>
+        @if(players.Any())
+        {
+                <ul>
+                    @foreach (var item in players)
+                    {
+                        <li class="@(CurrentPlayer == item.Name ? "selected" : null)" onclick="@(() => CurrentPlayer = item.Name)"> 
+                             <img src="/img/user.svg" />
+                             @item.Name 
+                            <span>  @wordsManager.GetWordsCount(item.Name) / @wordsManager.WORDS_PER_PLAYER </span>
+                        </li>
+                    }
+                </ul>
+        }
+        else 
+        {
+            <p> There are no players yet!</p>
+        }
+
+        <form onsubmit="@AddPlayer">
+            <input bind="@newPlayerName" placeholder="Player name" />
+            <button type="submit" class="add-btn" > + </button>
+        </form>
+    </section>
+
+    <section id="words">
+        @if(!String.IsNullOrWhiteSpace(CurrentPlayer))
+        {
+            <h1> @CurrentPlayer </h1>
+            <h2> @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h2>
+            <form id="player-words" onsubmit="@AddWord" >
+                @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
+                {
+                    <input bind="@newWord" placeholder="Word" type="password" />
+                    <button type="submit"> Add </button>
+                }
+            </form>
+        }
+
+    </section>
 </section>
 
-<hr />
+<button onclick="@SaveGameData" class="success-btn"> 
+    <img src="/img/success.svg" />
+    <span> Done </span>
+</button>
 
-@if(players.Any())
-{
-    <section>
-        <h2> Players: </h2>
-        <select bind="@CurrentPlayer">
-            @foreach (var item in players)
-            {
-                <option> @item.Name </option>
-            }
-        </select>
-    </section>
-}
-else 
-{
-    <p> There are no players yet!</p>
-}
 
-<hr />
-@if(!String.IsNullOrWhiteSpace(CurrentPlayer) && wordForPlayer < wordsManager.WORDS_PER_PLAYER)
-{
-    <section>
-        <h1> Current player: @CurrentPlayer  (@wordForPlayer words) </h1>
-        <input bind="@newWord" placeholder="Word" />
-        <button onclick="@AddWord"> Add </button>
-    </section>
-}
-else if(wordForPlayer >= wordsManager.WORDS_PER_PLAYER)
-{
-    <p> You aready got @wordsManager.WORDS_PER_PLAYER words </p>
-}
 
-<button onclick="@SaveGameData"> Save </button>
+
 
 @functions {
 
@@ -70,17 +83,25 @@ else if(wordForPlayer >= wordsManager.WORDS_PER_PLAYER)
     {
         wordsManager.AddPlayer(newPlayerName);
         this.players = wordsManager.GetPlayers();
+        this.CurrentPlayer = newPlayerName;
+        newPlayerName = null;
     }
 
-    void AddWord()
+    async Task AddWord()
     {
-        wordsManager.AddWord(newWord, currentPlayer);
-        this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
+        if(!string.IsNullOrWhiteSpace(newWord))
+        {
+            wordsManager.AddWord(newWord, currentPlayer);
+            this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
+            newWord = null;
+            await Sounds.Success();
+        }
     }
 
     void SaveGameData()
     {
         Storage.SetItem("all-words", wordsManager.GetWords());
         Storage.SetItem("all-players", wordsManager.GetPlayers());
+        UriHelper.NavigateTo("/counter");
     }    
 }

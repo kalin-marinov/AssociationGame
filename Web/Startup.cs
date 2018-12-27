@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 
-namespace BlazorTest
+namespace Web
 {
     public class Startup
     {

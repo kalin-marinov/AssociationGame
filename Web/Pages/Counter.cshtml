@@ -5,29 +5,30 @@
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<h1>Game page</h1>
 
+<section id="game">
+    <section id="guess-screen">
+        @if(roundEnded)
+        {
+            <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next round </button>
+            <p> End of round!</p>
+        }
+        else
+        {
+            <h2> Round: @game?.CurrentRound - Fight! </h2>
+            <p> @remainingTime</p>
 
-@if(roundEnded)
-{
-    <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next round </button>
-    <p> End of round!</p>
-}
-else
-{
-    <h2> Current Round: @game?.CurrentRound</h2>
-    <p> Remaining: @remainingTime</p>
+            <h2> @game?.CurrentPlayer?.Name </h2>
+            <h3> @game?.CurrentWord</h3>
 
-    <h2> Current player @game?.CurrentPlayer?.Name </h2>
-    <h3> Guess word: @game?.CurrentWord</h3>
-
-    <button class="btn btn-primary" onclick="@IncrementCount" disabled="@isWorking" >Start</button>
-    <button class="btn btn-primary" onclick="@DoSomething" disabled="@(!isWorking)" > Guess </button>
-}
-
-<hr>
-<ScoreScreen Scores="@game?.GetScores()" />
-
+            <button class="btn btn-primary" onclick="@IncrementCount" hidden="@isWorking" >Start</button>
+            <button class="btn btn-primary" onclick="@DoSomething" hidden="@(!isWorking)" > Guess </button>
+        }
+    </section>
+    <section id="scores">
+        <ScoreScreen Scores="@game?.GetScores()" />
+    </section>
+</section>
 
 @functions {
     bool isWorking = false;
@@ -67,12 +68,16 @@ else
         isWorking = false;
     }
 
-    void DoSomething()
+    async Task DoSomething()
     {
         game.GuessWord();
     
-        if(game.CurrentWord == null)
+        if(game.CurrentWord == null){
+            Console.WriteLine("End of round");
             roundEnded = true;
+        }
+        
+        await Sounds.Success();
     }
 
     void StartNextRound()
