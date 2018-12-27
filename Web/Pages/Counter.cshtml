@@ -1,0 +1,84 @@
+﻿@page "/counter"
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@using System.Threading;
+
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Game page</h1>
+
+
+@if(roundEnded)
+{
+    <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next round </button>
+    <p> End of round!</p>
+}
+else
+{
+    <h2> Current Round: @game?.CurrentRound</h2>
+    <p> Remaining: @remainingTime</p>
+
+    <h2> Current player @game?.CurrentPlayer?.Name </h2>
+    <h3> Guess word: @game?.CurrentWord</h3>
+
+    <button class="btn btn-primary" onclick="@IncrementCount" disabled="@isWorking" >Start</button>
+    <button class="btn btn-primary" onclick="@DoSomething" disabled="@(!isWorking)" > Guess </button>
+}
+
+<hr>
+<ScoreScreen Scores="@game?.GetScores()" />
+
+
+@functions {
+    bool isWorking = false;
+    bool roundEnded = false;
+    Game game;
+    
+    TimeSpan remainingTime;
+    TimeSpan tickRate = TimeSpan.FromSeconds(1);
+
+    protected override void OnInit()
+    {
+        var words = Storage.GetItem<string[]>("all-words");
+        var players = Storage.GetItem<Player[]>("all-players");
+
+        if(words == null || players == null)
+            UriHelper.NavigateTo("/setup");
+
+        else game = new Game(words, players);
+    }
+
+    async Task IncrementCount()
+    {
+        isWorking = true;
+        roundEnded = false;
+
+        remainingTime = game.TurnTime;
+        var playerTurn = game.PlayTurn();
+
+        while(remainingTime.TotalMilliseconds > 0 && !roundEnded)
+        {
+            await Task.Delay(tickRate);
+            remainingTime = remainingTime.Subtract(tickRate);
+            this.StateHasChanged();
+        }
+
+        await playerTurn;
+        isWorking = false;
+    }
+
+    void DoSomething()
+    {
+        game.GuessWord();
+    
+        if(game.CurrentWord == null)
+            roundEnded = true;
+    }
+
+    void StartNextRound()
+    {
+        game.FinishRound();
+        roundEnded = false;
+        remainingTime = game.TurnTime;
+    }
+}

@@ -1,0 +1,86 @@
+@page "/setup"
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
+
+<h1>Game setup</h1>
+
+<section>
+    <h2> Add player </h2>
+    <input bind="@newPlayerName" placeholder="Player name" />
+    <button onclick="@AddPlayer"> Add </button>
+</section>
+
+<hr />
+
+@if(players.Any())
+{
+    <section>
+        <h2> Players: </h2>
+        <select bind="@CurrentPlayer">
+            @foreach (var item in players)
+            {
+                <option> @item.Name </option>
+            }
+        </select>
+    </section>
+}
+else 
+{
+    <p> There are no players yet!</p>
+}
+
+<hr />
+@if(!String.IsNullOrWhiteSpace(CurrentPlayer) && wordForPlayer < wordsManager.WORDS_PER_PLAYER)
+{
+    <section>
+        <h1> Current player: @CurrentPlayer  (@wordForPlayer words) </h1>
+        <input bind="@newWord" placeholder="Word" />
+        <button onclick="@AddWord"> Add </button>
+    </section>
+}
+else if(wordForPlayer >= wordsManager.WORDS_PER_PLAYER)
+{
+    <p> You aready got @wordsManager.WORDS_PER_PLAYER words </p>
+}
+
+<button onclick="@SaveGameData"> Save </button>
+
+@functions {
+
+    GameData wordsManager = new GameData();
+    IEnumerable<Player> players = Enumerable.Empty<Player>();
+
+    string newPlayerName;
+
+    private string currentPlayer;
+    public string CurrentPlayer
+    {
+        get { return currentPlayer;}
+        set
+        {
+            this.currentPlayer = value;
+            this.wordForPlayer = wordsManager.GetWordsCount(value);
+        }
+    }
+    
+    int wordForPlayer;
+    string newWord;
+
+    void AddPlayer()
+    {
+        wordsManager.AddPlayer(newPlayerName);
+        this.players = wordsManager.GetPlayers();
+    }
+
+    void AddWord()
+    {
+        wordsManager.AddWord(newWord, currentPlayer);
+        this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
+    }
+
+    void SaveGameData()
+    {
+        Storage.SetItem("all-words", wordsManager.GetWords());
+        Storage.SetItem("all-players", wordsManager.GetPlayers());
+    }    
+}
