@@ -19,9 +19,20 @@ public class GameData
         this.wordsByPlayer = new Dictionary<string, HashSet<string>>();
     }
 
+    public GameData(IEnumerable<Player> players)
+    {
+        this.players = players.ToDictionary(p => p.Name);
+        this.wordsByPlayer = new Dictionary<string, HashSet<string>>();
+    }
+
     public void AddPlayer(string name)
     {
         this.players.Add(name, new Player(name));
+    }
+
+    public void RemovePlayer(string name)
+    {
+        this.players.Remove(name);
     }
 
     public void AddWord(string word, string playerName)

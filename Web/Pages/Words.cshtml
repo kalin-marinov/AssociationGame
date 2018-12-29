@@ -1,22 +1,28 @@
-@page "/setup"
+@page "/words"
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <section id="setup">
-    <section id="players">
+    <section class="players">
         <h1> Players </h1>
         <h2> </h2>
 
-        @if(players.Any())
+        @if(wordsManager.GetPlayers().Any())
         {
                 <ul>
-                    @foreach (var item in players)
+                    @foreach (var item in wordsManager.GetPlayers())
                     {
                         <li class="@(CurrentPlayer == item.Name ? "selected" : null)" onclick="@(() => CurrentPlayer = item.Name)"> 
-                             <img src="/img/user.svg" />
-                             @item.Name 
-                            <span>  @wordsManager.GetWordsCount(item.Name) / @wordsManager.WORDS_PER_PLAYER </span>
+                             <span class="usr-icon">
+                                <img src="/img/user.svg" />
+                             </span>
+                             <span class="usr-name">
+                                @item.Name 
+                             </span>
+                             <span>  
+                                 @wordsManager.GetWordsCount(item.Name) / @wordsManager.WORDS_PER_PLAYER 
+                             </span>
                         </li>
                     }
                 </ul>
@@ -25,11 +31,6 @@
         {
             <p> There are no players yet!</p>
         }
-
-        <form onsubmit="@AddPlayer">
-            <input bind="@newPlayerName" placeholder="Player name" />
-            <button type="submit" class="add-btn" > + </button>
-        </form>
     </section>
 
     <section id="words">
@@ -57,13 +58,8 @@
 
 
 
-
 @functions {
-
-    GameData wordsManager = new GameData();
-    IEnumerable<Player> players = Enumerable.Empty<Player>();
-
-    string newPlayerName;
+    GameData wordsManager;
 
     private string currentPlayer;
     public string CurrentPlayer
@@ -79,12 +75,15 @@
     int wordForPlayer;
     string newWord;
 
-    void AddPlayer()
+    override protected void OnInit()
     {
-        wordsManager.AddPlayer(newPlayerName);
-        this.players = wordsManager.GetPlayers();
-        this.CurrentPlayer = newPlayerName;
-        newPlayerName = null;
+        var storedPlayers = Storage.GetItem<IEnumerable<Player>>("players");
+
+        if(storedPlayers == null || !storedPlayers.Any())
+          UriHelper.NavigateTo("/players");
+
+        else
+            this.wordsManager = new GameData(storedPlayers ?? Enumerable.Empty<Player>());
     }
 
     async Task AddWord()
@@ -101,7 +100,6 @@
     void SaveGameData()
     {
         Storage.SetItem("all-words", wordsManager.GetWords());
-        Storage.SetItem("all-players", wordsManager.GetPlayers());
         UriHelper.NavigateTo("/counter");
     }    
 }

@@ -41,10 +41,10 @@
     protected override void OnInit()
     {
         var words = Storage.GetItem<string[]>("all-words");
-        var players = Storage.GetItem<Player[]>("all-players");
+        var players = Storage.GetItem<Player[]>("players");
 
         if(words == null || players == null)
-            UriHelper.NavigateTo("/setup");
+            UriHelper.NavigateTo("/words");
 
         else game = new Game(words, players);
     }

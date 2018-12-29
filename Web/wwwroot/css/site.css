@@ -22,24 +22,41 @@ app {
     width: 40%;
 }
 
-#players ul li {
-    display: block;
-    padding: 15px 5px;
+
+/* Players table */
+.players ul li {
+    padding: 10px 0;
     cursor: pointer;
+    display: flex;
+    font-size: 28px;
 }
 
-#players ul li img {
-    height: 24px;
+.players ul li span{
+    line-height: 32px;
+}
+
+.players ul li img {
+    height: 32px;
     margin-right: 10px;
 }
 
-#players ul li.selected {
+.players .usr-icon{
+    width:40px;
+}
+
+.players .usr-name{
+    flex-grow: 1;
+}
+
+.players ul li.selected {
     background: lightblue;
 }
 
-#players form {
+.players form {
     margin: 30px 0px;
 }
+
+
 
 ul {
     list-style: none;
@@ -47,8 +64,13 @@ ul {
     padding: 0;
 }
 
+table{
+    width:100%;
+    border-collapse: collapse;
+}
+
 input {
-    min-width: 300px;
+    min-width: 200px;
     border-radius: 2px;
     padding: 0px 10px;
     border: none;
@@ -73,6 +95,13 @@ button.add-btn{
     font-size: 40px;
 }
 
+button.remove-btn{
+    background: red;
+    min-width: 40px;
+    line-height: 40px;
+}
+
+
 button.success-btn{
     position: absolute;
     display: flex;
@@ -83,7 +112,7 @@ button.success-btn{
     margin: auto;
     left: 0;
     right: 0;
-    top:85vh;
+    bottom:5vh;
 }
 
 #game {
@@ -117,6 +146,7 @@ form {
 
 form input {
     margin-right: 12px;
+    flex-grow: 1;
 }
 
 img{

@@ -1,0 +1,100 @@
+@page "/players"
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+
+<style>
+    #players-setup{
+        background: rgb(248, 232, 213);
+        height:100%;
+    }
+
+    #list-centered{
+        width:80%;
+        max-width: 800px;
+        min-width: 330px;
+        margin:auto;
+        min-height: calc(100vh - 50px - 30px);
+        padding: 50px 0 0px 0;
+    }
+
+</style>
+
+<section id="players-setup">
+
+    <section id="list-centered" class="players">
+
+      @if(gameData.GetPlayers().Any())
+        {
+            <ul>
+                @foreach (var item in gameData.GetPlayers())
+                {
+                    <li> 
+                        <span class="user-icon">
+                                <img src="/img/user.svg" />
+                        </span>
+                        <span class="usr-name"> 
+                            @item.Name
+                        </span>
+                        <span>
+                            <button class="remove-btn" onclick="@(() => RemovePlayer(item.Name))" > X </button>
+                        </span>
+                    </li>
+                }
+            </ul>
+        }
+        else 
+        {
+            <p> There are no players yet!</p>
+        }
+
+
+        <form onsubmit="@AddPlayer">
+            <input bind="@newPlayerName" placeholder="Player name" />
+            <button type="submit" class="add-btn" > + </button>
+        </form>
+
+    </section>
+
+
+</section>
+
+<button onclick="@Save" class="success-btn"> 
+    <img src="/img/success.svg" />
+    <span> Done </span>
+</button>
+
+
+
+@functions{
+    
+    string newPlayerName;
+    GameData gameData;
+    
+    override protected void OnInit()
+    {
+        var storedPlayers = Storage.GetItem<IEnumerable<Player>>("players");
+        this.gameData = new GameData(storedPlayers ?? Enumerable.Empty<Player>());
+    }
+
+    void AddPlayer()
+    {
+        gameData.AddPlayer(newPlayerName);
+        newPlayerName = null;
+    }
+
+    void RemovePlayer(string name)
+    {
+        gameData.RemovePlayer(name);
+    }
+
+
+    void Save()
+    {
+        Storage.SetItem("players", gameData.GetPlayers());
+        UriHelper.NavigateTo("/words");
+    }
+}
+
