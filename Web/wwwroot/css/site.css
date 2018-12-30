@@ -3,6 +3,7 @@ body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
+    color: rgb(61, 57, 70);
 }
 
 app {
@@ -18,12 +19,28 @@ app {
     min-height: 100vh;
 }
 
-#setup section {
-    width: 40%;
+#setup .players {
+    width: 30%;
 }
 
+#setup .players li {
+    padding: 10px;
+}
+
+#setup #words {
+    width: 50%;
+    padding: 60px;
+    margin: 80px 10px 200px 10px;
+    background-color: #fff7d9;
+    background-image: url("/img/squares.svg");
+    box-shadow: 0px 0px 50px -4px grey;
+    border: 1px solid black;
+    border-radius: 5px;
+    position: relative;
+}
 
 /* Players table */
+
 .players ul li {
     padding: 10px 0;
     cursor: pointer;
@@ -31,20 +48,20 @@ app {
     font-size: 28px;
 }
 
-.players ul li span{
+.players ul li span {
     line-height: 32px;
 }
 
 .players ul li img {
     height: 32px;
-    margin-right: 10px;
 }
 
-.players .usr-icon{
-    width:40px;
+.players .usr-icon {
+    width: 40px;
+    margin-right: 16px;
 }
 
-.players .usr-name{
+.players .usr-name {
     flex-grow: 1;
 }
 
@@ -56,27 +73,25 @@ app {
     margin: 30px 0px;
 }
 
-
-
 ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-table{
-    width:100%;
+table {
+    width: 100%;
     border-collapse: collapse;
 }
 
 input {
     min-width: 200px;
     border-radius: 2px;
-    padding: 0px 10px;
+    padding: 0px 20px;
     border: none;
     box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    line-height: 60px;
+    font-size: 24px;
+    line-height: 70px;
 }
 
 button {
@@ -91,28 +106,64 @@ button {
     line-height: 60px;
 }
 
-button.add-btn{
+button:focus {
+    outline: 0;
+}
+
+button.add-btn {
     font-size: 40px;
 }
 
-button.remove-btn{
+button.remove-btn {
     background: red;
     min-width: 40px;
     line-height: 40px;
 }
 
+button.preview-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
 
-button.success-btn{
+button.preview-btn.active {
+    box-shadow: inset 1px 1px 15px 1px #333;
+}
+
+button.preview-btn img {
+    height: 40px;
+}
+
+button.clear-btn {
+    height: 100px;
+    width: 100px;
     position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 20px;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px gray;
+    transition: .2s all;
+}
+
+button.clear-btn:active {
+    transform: rotateZ(-180deg);
+}
+
+button.success-btn {
     display: flex;
     font-size: 40px;
     height: 100px;
     line-height: 100px;
     width: 400px;
-    margin: auto;
-    left: 0;
+}
+
+#setup .success-btn {
+    position: absolute;
+    bottom: 8vh;
+    left: 30vw;
     right: 0;
-    bottom:5vh;
+    margin: auto;
 }
 
 #game {
@@ -149,7 +200,33 @@ form input {
     flex-grow: 1;
 }
 
-img{
+form button:not(:last-of-type) {
+    margin-right: 12px;
+}
+
+img {
     max-height: 100%;
     max-width: 100%;
+}
+
+.right {
+    float: right;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotateZ(0deg)
+    }
+    25% {
+        transform: rotateZ(90deg)
+    }
+    50% {
+        transform: rotateZ(180deg)
+    }
+    75% {
+        transform: rotateZ(270deg)
+    }
+    100% {
+        transform: rotateZ(0deg)
+    }
 }

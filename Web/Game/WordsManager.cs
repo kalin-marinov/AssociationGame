@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class WordsManager
 {
     private IReadOnlyCollection<string> allWords;
-    private HashSet<string> roundWords;
+    private List<string> roundWords;
     private Random rng;
 
     public int RemainingWords => roundWords.Count;
@@ -20,12 +20,12 @@ public class WordsManager
 
     public void ResetRoundWords()
     {
-        this.roundWords = new HashSet<string>(allWords);
+        this.roundWords = new List<string>(allWords);
     }
 
     public string GetRandomWord()
     {
-        return this.roundWords.GetRandomElement(rng);
+        return this.roundWords.GetRandomListItem(rng);
     }
 
     public void RemoveFromRound(string word)

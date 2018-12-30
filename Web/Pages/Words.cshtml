@@ -4,14 +4,14 @@
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <section id="setup">
-    <section class="players">
+    <section id="players-select" class="players">
         <h1> Players </h1>
         <h2> </h2>
 
-        @if(wordsManager.GetPlayers().Any())
+        @if(wordsManager.Players.Any())
         {
                 <ul>
-                    @foreach (var item in wordsManager.GetPlayers())
+                    @foreach (var item in wordsManager.Players)
                     {
                         <li class="@(CurrentPlayer == item.Name ? "selected" : null)" onclick="@(() => CurrentPlayer = item.Name)"> 
                              <span class="usr-icon">
@@ -36,24 +36,32 @@
     <section id="words">
         @if(!String.IsNullOrWhiteSpace(CurrentPlayer))
         {
-            <h1> @CurrentPlayer </h1>
-            <h2> @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h2>
-            <form id="player-words" onsubmit="@AddWord" >
-                @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
-                {
-                    <input bind="@newWord" placeholder="Word" type="password" />
-                    <button type="submit"> Add </button>
-                }
-            </form>
+                    <h1 class="right" > @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h1>
+                    <h1> @CurrentPlayer </h1>
+                    <form id="player-words" onsubmit="@AddWord" >
+                        @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
+                        {
+                            <input bind="@newWord" placeholder="Word" type="@(hideInput ? "password" : "text")" />
+                            <button class="preview-btn @(!hideInput ? "active" : null)" type="button" onclick="@(() => hideInput = !hideInput)" > 
+                                <img src="/img/eye.svg" />    
+                            </button>
+                            <button class="add-btn" type="submit"> + </button>
+                        }
+                    </form>
+                    <button class="clear-btn" onclick="@ClearWords"  >  <img src="/img/broom.svg" />  </button>
         }
-
     </section>
+
+   @if(wordsManager.WordsValid)
+   {
+        <button onclick="@SaveGameData" class="success-btn"> 
+            <img src="/img/success.svg" />
+            <span> Done </span>
+        </button>
+   }
 </section>
 
-<button onclick="@SaveGameData" class="success-btn"> 
-    <img src="/img/success.svg" />
-    <span> Done </span>
-</button>
+
 
 
 
@@ -74,6 +82,7 @@
     
     int wordForPlayer;
     string newWord;
+    bool hideInput = true;
 
     override protected void OnInit()
     {
@@ -101,5 +110,11 @@
     {
         Storage.SetItem("all-words", wordsManager.GetWords());
         UriHelper.NavigateTo("/counter");
+    }
+
+    void ClearWords()
+    {
+        wordsManager.ClearWords(CurrentPlayer);
+        wordForPlayer = 0;
     }    
 }

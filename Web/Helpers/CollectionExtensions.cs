@@ -12,7 +12,7 @@ public static class CollectionExtensions
         return collection.Skip(index).FirstOrDefault();
     }
 
-    public static T GetRandomElement<T>(this IList<T> list, Random random, int startIndex = 0)
+    public static T GetRandomListItem<T>(this IList<T> list, Random random, int startIndex = 0)
     {
         var index = random.Next(startIndex, list.Count);
         return list[index];

@@ -13,6 +13,8 @@ public class GameData
 
     private Dictionary<string, Player> players;
 
+    public IReadOnlyCollection<Player> Players => this.players.Values;
+
     public GameData()
     {
         this.players = new Dictionary<string, Player>();
@@ -27,6 +29,7 @@ public class GameData
 
     public void AddPlayer(string name)
     {
+        name = name.Trim();
         this.players.Add(name, new Player(name));
     }
 
@@ -48,6 +51,13 @@ public class GameData
         this.wordsByPlayer[player.Name].Add(word);
     }
 
+
+    public void ClearWords(string name)
+    {
+        this.wordsByPlayer[name].Clear();
+    }
+
+
     public int GetWordsCount(string playerName)
     {
         if (wordsByPlayer.ContainsKey(playerName))
@@ -56,13 +66,14 @@ public class GameData
             return 0;
     }
 
-    public IReadOnlyCollection<Player> GetPlayers()
-    {
-        return this.players.Values;
-    }
 
     public IEnumerable<string> GetWords()
     {
         return this.wordsByPlayer.SelectMany(kvp => kvp.Value);
     }
+
+    public bool PlayersValid => players.Count >= 2 && players.Count % 2 == 0;
+
+    public bool WordsValid => wordsByPlayer.Values.Count == players.Count
+             && wordsByPlayer.Values.All(words => words.Count == WORDS_PER_PLAYER);
 }

@@ -1,7 +1,23 @@
 ﻿@page "/"
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<h1>Hello, world!</h1>
+<h1>Some words Game</h1>
 
-Welcome to your new app.
+<button onclick="@Start" > Start </button>
+<button onclick="@ClearData" > Clear previous date </button>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@functions{
+
+    void Start()
+    {
+        UriHelper.NavigateTo("/players");
+    }
+
+    void ClearData()
+    {
+        Storage.Clear();
+    }
+
+}
