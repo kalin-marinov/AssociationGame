@@ -36,19 +36,19 @@
     <section id="words">
         @if(!String.IsNullOrWhiteSpace(CurrentPlayer))
         {
-                    <h1 class="right" > @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h1>
-                    <h1> @CurrentPlayer </h1>
-                    <form id="player-words" onsubmit="@AddWord" >
-                        @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
-                        {
-                            <input bind="@newWord" placeholder="Word" type="@(hideInput ? "password" : "text")" />
-                            <button class="preview-btn @(!hideInput ? "active" : null)" type="button" onclick="@(() => hideInput = !hideInput)" > 
-                                <img src="/img/eye.svg" />    
-                            </button>
-                            <button class="add-btn" type="submit"> + </button>
-                        }
-                    </form>
-                    <button class="clear-btn" onclick="@ClearWords"  >  <img src="/img/broom.svg" />  </button>
+            <h1 class="right" > @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h1>
+            <h1> @CurrentPlayer </h1>
+            <form id="player-words" onsubmit="@AddWord" >
+                @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
+                {
+                    <input bind="@newWord" placeholder="Word" type="@(hideInput ? "password" : "text")" />
+                    <button class="preview-btn @(!hideInput ? "active" : null)" type="button" onclick="@(() => hideInput = !hideInput)" > 
+                        <img src="/img/eye.svg" />    
+                    </button>
+                    <button class="add-btn" type="submit"> + </button>
+                }
+            </form>
+            <button class="clear-btn" onclick="@ClearWords"  >  <img src="/img/broom.svg" />  </button>
         }
     </section>
 

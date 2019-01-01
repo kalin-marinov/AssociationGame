@@ -1,12 +1,16 @@
-<table>
+<table class="score-table" >
+    @{
+        var index = 1;
+    }
     @foreach (var team in Scores)
     {
         <tr>
-            <td> @team.Player1.Name </td>
-            <td> & </td>
-            <td> @team.Player2.Name </td>
-            <td> - @team.Score </td>
+            <td> @index . @team.Player1.Name </td>
+            <td> @(index + Scores.Count())  .  @team.Player2.Name </td>
+            <td> @team.Score </td>
         </tr>
+
+        index++;
     }
 
  </table>
@@ -21,5 +25,4 @@
         if(Scores == null) 
          Scores = Enumerable.Empty<TeamScore>();
     }
-
 }

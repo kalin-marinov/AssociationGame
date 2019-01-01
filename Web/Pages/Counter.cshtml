@@ -15,14 +15,25 @@
         }
         else
         {
-            <h2> Round: @game?.CurrentRound - Fight! </h2>
-            <p> @remainingTime</p>
+            <div id="guess-centered">
+                <p> Round @game?.CurrentRound - Fight! </p>
 
-            <h2> @game?.CurrentPlayer?.Name </h2>
-            <h3> @game?.CurrentWord</h3>
+                <h1>
+                    <img style="height:40px" src="/img/user.svg" />
+                     @game?.CurrentPlayer?.Name 
+                </h1>
+            
+                @if(game?.CurrentWord != null)
+                {
+                    <p class="word" style="font-size:@CalculateFontSize()" > @game.CurrentWord</p>
+                    <p class="timer" > @remainingTime</p>
+                }
 
-            <button class="btn btn-primary" onclick="@IncrementCount" hidden="@isWorking" >Start</button>
-            <button class="btn btn-primary" onclick="@DoSomething" hidden="@(!isWorking)" > Guess </button>
+                <div class="buttons">
+                    <button  onclick="@IncrementCount" hidden="@isWorking"> START </button>
+                    <button class="guess-btn" onclick="@DoSomething" hidden="@(!isWorking)">          <img src="/img/success.svg" /> </button>
+                </div>
+            </div>
         }
     </section>
     <section id="scores">
@@ -49,6 +60,7 @@
         else game = new Game(words, players);
     }
 
+
     async Task IncrementCount()
     {
         isWorking = true;
@@ -70,6 +82,9 @@
 
     async Task DoSomething()
     {
+        if(remainingTime.TotalSeconds < 1)
+            return;
+
         game.GuessWord();
     
         if(game.CurrentWord == null){
@@ -85,5 +100,16 @@
         game.FinishRound();
         roundEnded = false;
         remainingTime = game.TurnTime;
+    }
+
+
+    string CalculateFontSize()
+    {
+        var length = game?.CurrentWord?.Length ?? 0;
+         
+        // Map word length interval
+
+        var unit = 1 - ((length - 1) * (1- 0.2) / (45.0 - 1.0));
+        return $"calc({unit*8}vh - {unit}vw)";
     }
 }

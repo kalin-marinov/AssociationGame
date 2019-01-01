@@ -14,6 +14,9 @@ public static class CollectionExtensions
 
     public static T GetRandomListItem<T>(this IList<T> list, Random random, int startIndex = 0)
     {
+        if (list.Count == 0)
+            return default(T);
+
         var index = random.Next(startIndex, list.Count);
         return list[index];
     }
