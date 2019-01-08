@@ -7,7 +7,7 @@ public class Game
 {
     public int MAX_ROUNDS { get; set; } = 3;
 
-    public TimeSpan TurnTime { get; private set; } = TimeSpan.FromSeconds(100);
+    public TimeSpan TurnTime { get; } = TimeSpan.FromSeconds(60);
 
     public int CurrentRound { get; private set; } = 0;
 

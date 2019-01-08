@@ -10,40 +10,56 @@
     <section id="guess-screen">
         @if(roundEnded)
         {
-            <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next round </button>
-            <p> End of round!</p>
+            <div id="guess-centered">
+                <p> End of round!</p>
+                <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next </button>
+            </div>
         }
         else
         {
             <div id="guess-centered">
                 <p> Round @game?.CurrentRound - Fight! </p>
 
+                <div class="menu-btn @(showPlayers ? "opened" : null)" onclick="@(() => showPlayers = !showPlayers)"> 
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div>
+
                 <h1>
                     <img style="height:40px" src="/img/user.svg" />
                      @game?.CurrentPlayer?.Name 
                 </h1>
             
-                @if(game?.CurrentWord != null)
+                @if(isWorking)
                 {
-                    <p class="word" style="font-size:@CalculateFontSize()" > @game.CurrentWord</p>
+                    <p class="word">
+                        <span id="word-centered"> 
+                             <span id="word-text"> @game.CurrentWord </span>
+                        </span>
+                    </p>
+
                     <p class="timer" > @remainingTime</p>
                 }
 
                 <div class="buttons">
-                    <button  onclick="@IncrementCount" hidden="@isWorking"> START </button>
-                    <button class="guess-btn" onclick="@DoSomething" hidden="@(!isWorking)">          <img src="/img/success.svg" /> </button>
+                    <button class="start-btn"  onclick="@IncrementCount" hidden="@isWorking"> <img src="/img/play-button.svg" /> </button>
+                    <button class="guess-btn" onclick="@DoSomething" hidden="@(!isWorking)">  <img src="/img/success.svg" /> </button>
                 </div>
             </div>
         }
     </section>
-    <section id="scores">
+    <aside id="scores" style="width:@(showPlayers ? "600px" : "0")" >
+        <a class="closebtn" onclick="@(() => showPlayers = false)">&times;</a>
         <ScoreScreen Scores="@game?.GetScores()" />
-    </section>
+    </aside>
 </section>
 
 @functions {
     bool isWorking = false;
     bool roundEnded = false;
+    bool showPlayers = false;
+
     Game game;
     
     TimeSpan remainingTime;
@@ -68,6 +84,7 @@
 
         remainingTime = game.TurnTime;
         var playerTurn = game.PlayTurn();
+        await ResizeWord();
 
         while(remainingTime.TotalMilliseconds > 0 && !roundEnded)
         {
@@ -78,6 +95,7 @@
 
         await playerTurn;
         isWorking = false;
+        this.StateHasChanged();
     }
 
     async Task DoSomething()
@@ -103,13 +121,12 @@
     }
 
 
-    string CalculateFontSize()
-    {
-        var length = game?.CurrentWord?.Length ?? 0;
-         
-        // Map word length interval
+ //   protected override Task OnAfterRenderAsync(){
+ //       return ResizeWord();
+ //   }
 
-        var unit = 1 - ((length - 1) * (1- 0.2) / (45.0 - 1.0));
-        return $"calc({unit*8}vh - {unit}vw)";
+    Task ResizeWord()
+    {
+        return JSRuntime.Current.InvokeAsync<bool>("deferFit", "#word-text");
     }
 }

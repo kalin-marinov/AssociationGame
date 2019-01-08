@@ -9,3 +9,16 @@ window['playSound'] = function (url) {
     };
     document.body.appendChild(audio);
 }
+
+window['fitWord'] = function(selector){
+    window['fitty'](selector, { maxSize: 100, observeMutations : false} );
+}
+
+window['deferFit'] = function(selector){
+    setTimeout(() => {
+        window['fitty'](selector, { maxSize: 100} );
+        console.log('resizing ' + selector);
+    }, 10);
+
+    return true;
+}
