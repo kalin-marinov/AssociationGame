@@ -3,9 +3,40 @@
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
+<style>
+    #setup {
+        display: flex;
+        justify-content: space-around;
+        background: rgb(248, 232, 213);
+        min-height: 100vh;
+    }
+
+    #setup .players {
+        width: 30%;
+    }
+
+    #setup .players li {
+        padding: 10px;
+    }
+
+    #setup #words {
+        width: 50%;
+        padding: 60px;
+        margin: 80px 10px 200px 10px;
+        background-color: #fff7d9;
+        background-image: url("/img/squares.svg");
+        box-shadow: 0px 0px 50px -4px grey;
+        border: 1px solid #8e8e8e;
+        border-radius: 5px;
+        position: relative;
+    }
+
+</style>
+
+
 <section id="setup">
     <section id="players-select" class="players">
-        <h1> Players </h1>
+        <h1> <img src="/img/team.svg" width="48px" />  PLAYERS </h1>
         <h2> </h2>
 
         @if(wordsManager.Players.Any())
@@ -109,7 +140,7 @@
     void SaveGameData()
     {
         Storage.SetItem("all-words", wordsManager.GetWords());
-        UriHelper.NavigateTo("/counter");
+        UriHelper.NavigateTo("/game");
     }
 
     void ClearWords()
