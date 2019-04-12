@@ -22,9 +22,14 @@ public class Scoreboard
         }
     }
 
-    public void AddPoints(string playerName)
+    public void AddPoint(string playerName)
     {
         this.totalPlayerScores[playerName]++;
+    }
+
+    public void RemovePoint(string playerName)
+    {
+        this.totalPlayerScores[playerName]--;
     }
 
     public int GetPlayerScore(string playerName)

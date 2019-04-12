@@ -29,7 +29,7 @@
     }
 
     #guess-centered h1 {
-        margin-top: 100px;
+        margin-top: 80px;
         font-size: 46px;
     }
 
@@ -48,15 +48,6 @@
         max-width: 100%;
     }
 
-    #scores .closebtn {
-        position: absolute;
-        top: 10px;
-        right: 25px;
-        font-size: 50px;
-        margin-left: 50px;
-        cursor: pointer;
-    }
-
     .score-table {
         margin-top: 64px;
     }
@@ -66,7 +57,7 @@
     }
 
     .timer {
-        font-size: 42px;
+        font-size: 50px;
         text-align: center;
     }
 
@@ -109,6 +100,19 @@
         height: 100px;
     }
 
+    .undo-btn{
+        min-width: 60px;
+        width:60px;
+        height: 60px;
+        position: absolute;
+        bottom:4vh;
+        right:4vh;
+        box-shadow:  none;
+        padding: 0;
+        background:none;
+        z-index:100;
+    }
+
     button.start-btn {
         height: 100px;
         padding: 25px 10px 25px 25px;
@@ -122,8 +126,8 @@
         @if(roundEnded)
         {
             <div id="guess-centered">
-                <p> End of round!</p>
-                <button class="btn btn-primary" onclick="@StartNextRound" hidden="@(!roundEnded)" > Next </button>
+                <h3> Round @game?.CurrentRound - Over! </h3>
+                <button class="start-btn" onclick="@StartNextRound" hidden="@(!roundEnded)"> <img src="/img/play-button.svg" /> </button>
             </div>
         }
         else
@@ -150,9 +154,11 @@
                         </span>
                     </p>
 
-                    <p class="timer" > @remainingTime</p>
+                    <p class="timer" > @remainingTime.ToString("mm':'ss") </p>
                 }
 
+                <button class="undo-btn" onclick="@Undo" hidden="@(!canUndo)"> <img src="/img/undo.svg" />  </button>
+            
                 <div class="buttons">
                     <button class="start-btn" onclick="@HandleTurn" hidden="@isWorking"> <img src="/img/play-button.svg" /> </button>
                     <button class="guess-btn" onclick="@Guess" hidden="@(!isWorking)">  <img src="/img/success.svg" /> </button>
@@ -161,7 +167,6 @@
         }
     </section>
     <aside id="scores" style="width:@(showPlayers ? "600px" : "0")" >
-        <a class="closebtn" onclick="@(() => showPlayers = false)">&times;</a>
         <ScoreScreen Scores="@game?.GetScores()" />
     </aside>
 </section>
@@ -170,11 +175,12 @@
     bool isWorking = false;
     bool roundEnded = false;
     bool showPlayers = false;
+    bool canUndo = false;
 
     Game game;
     
     TimeSpan remainingTime;
-    TimeSpan tickRate = TimeSpan.FromSeconds(1);
+    TimeSpan tickRate = TimeSpan.FromMilliseconds(950);
 
     protected override void OnInit()
     {
@@ -195,17 +201,21 @@
 
         remainingTime = game.TurnTime;
         var playerTurn = game.PlayTurn();
+        var end = DateTime.Now.Add(game.TurnTime);
+
         await ResizeWord();
 
         while(remainingTime.TotalMilliseconds > 0 && !roundEnded)
         {
             await Task.Delay(tickRate);
-            remainingTime = remainingTime.Subtract(tickRate);
+            remainingTime = end.Subtract(DateTime.Now); //remainingTime.Subtract(tickRate);
             this.StateHasChanged();
         }
 
         await playerTurn;
         isWorking = false;
+        canUndo = false;
+
         this.StateHasChanged();
     }
 
@@ -220,8 +230,15 @@
             Console.WriteLine("End of round");
             roundEnded = true;
         }
-        
+
+        canUndo = true;
         await Sounds.Success();
+    }
+
+    void Undo()
+    {
+       game.UndoGuess();
+       canUndo = false; 
     }
 
     void StartNextRound()

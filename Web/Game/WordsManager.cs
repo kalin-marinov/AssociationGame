@@ -6,8 +6,10 @@ using System.Collections.Generic;
 public class WordsManager
 {
     private IReadOnlyCollection<string> allWords;
-    private List<string> roundWords;
     private Random rng;
+
+    private List<string> roundWords;
+    private Stack<string> removedFromFround;
 
     public int RemainingWords => roundWords.Count;
 
@@ -21,6 +23,7 @@ public class WordsManager
     public void ResetRoundWords()
     {
         this.roundWords = new List<string>(allWords);
+        this.removedFromFround = new Stack<string>(allWords);
     }
 
     public string GetRandomWord()
@@ -31,5 +34,13 @@ public class WordsManager
     public void RemoveFromRound(string word)
     {
         this.roundWords.Remove(word);
+        this.removedFromFround.Push(word);
+    }
+
+    public string RevertRemove()
+    {
+        var word = this.removedFromFround.Pop();
+        this.roundWords.Add(word);
+        return word;
     }
 }

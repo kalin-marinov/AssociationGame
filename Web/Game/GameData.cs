@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 /// <summary> This is the data required for the game to begin - mostly players and words </summary>
 public class GameData
@@ -30,6 +31,11 @@ public class GameData
     public void AddPlayer(string name)
     {
         name = name.Trim();
+
+        if (!Regex.IsMatch(name, "^[a-zA-Zа-яА-Я\\s]{2,30}$"))
+            throw new ArgumentException($"{name} is not a valid player name!");
+
+
         this.players.Add(name, new Player(name));
     }
 
@@ -40,7 +46,11 @@ public class GameData
 
     public void AddWord(string word, string playerName)
     {
+        word = word.ToLower().Trim();
         var player = this.players[playerName];
+
+        if (!Regex.IsMatch(word, "^[а-я]{2,40}$"))
+            throw new ArgumentException($"{word} is not a valid word. Do not use symbols or whitespaces");
 
         if (!this.wordsByPlayer.ContainsKey(player.Name))
             this.wordsByPlayer[player.Name] = new HashSet<string>();

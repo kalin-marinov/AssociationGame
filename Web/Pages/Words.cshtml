@@ -7,7 +7,7 @@
     #setup {
         display: flex;
         justify-content: space-around;
-        background: rgb(248, 232, 213);
+        background: rgb(228, 224, 214); /* rgb(248, 232, 213); */
         min-height: 100vh;
     }
 
@@ -26,9 +26,11 @@
         background-color: #fff7d9;
         background-image: url("/img/squares.svg");
         box-shadow: 0px 0px 50px -4px grey;
-        border: 1px solid #8e8e8e;
+        border: 1px solid #b7b6b6;
         border-radius: 5px;
         position: relative;
+        min-height: 400px;
+        color: #444444;
     }
 
 </style>
@@ -69,10 +71,11 @@
         {
             <h1 class="right" > @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h1>
             <h1> @CurrentPlayer </h1>
+
             <form id="player-words" onsubmit="@AddWord" >
                 @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
                 {
-                    <input bind="@newWord" placeholder="Word" type="@(hideInput ? "password" : "text")" />
+                    <input class="@(invalidWord ? "invalid" : null )"  bind="@newWord" placeholder="..." type="@(hideInput ? "password" : "text")" />
                     <button class="preview-btn @(!hideInput ? "active" : null)" type="button" onclick="@(() => hideInput = !hideInput)" > 
                         <img src="/img/eye.svg" />    
                     </button>
@@ -114,6 +117,7 @@
     int wordForPlayer;
     string newWord;
     bool hideInput = true;
+    bool invalidWord = false;
 
     override protected void OnInit()
     {
@@ -130,10 +134,19 @@
     {
         if(!string.IsNullOrWhiteSpace(newWord))
         {
-            wordsManager.AddWord(newWord, currentPlayer);
-            this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
-            newWord = null;
-            await Sounds.Success();
+            try
+            {
+                wordsManager.AddWord(newWord, currentPlayer);
+                this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
+                newWord = null;
+                invalidWord = false;
+                await Sounds.Success();
+            }
+            catch (System.Exception err)
+            {
+                invalidWord = true;
+                Console.WriteLine("Word add error: " + err.Message);
+            }
         }
     }
 
@@ -147,5 +160,6 @@
     {
         wordsManager.ClearWords(CurrentPlayer);
         wordForPlayer = 0;
+        invalidWord = false;
     }    
 }

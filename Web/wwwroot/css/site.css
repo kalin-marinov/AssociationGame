@@ -25,6 +25,7 @@ app {
 
 .players ul li span {
     line-height: 32px;
+    min-width:60px;
 }
 
 .players ul li img {
@@ -69,6 +70,10 @@ input {
     line-height: 70px;
 }
 
+input.invalid{
+    box-shadow: 0px 0px 5px 1px #bf0808;
+}
+
 button {
     padding: 0px 10px;
     min-width: 100px;
@@ -93,6 +98,7 @@ button.remove-btn {
     background: red;
     min-width: 40px;
     line-height: 40px;
+    font-weight:bold;
 }
 
 button.preview-btn {
@@ -135,7 +141,7 @@ button.success-btn {
 
 #setup .success-btn {
     position: absolute;
-    bottom: 8vh;
+    bottom: 5vh;
     left: 30vw;
     right: 0;
     margin: auto;
@@ -189,6 +195,7 @@ img {
     position: absolute;
     right: 20px;
     top: 5px;
+    z-index: 100;
 }
 
 .bar1,
@@ -204,13 +211,16 @@ img {
 .menu-btn.opened .bar1 {
     -webkit-transform: rotate(-45deg) translate(-9px, 6px);
     transform: rotate(-45deg) translate(-9px, 6px);
+    background-color:white;
 }
 
 .menu-btn.opened .bar2 {
     opacity: 0;
+    background-color:white;
 }
 
 .menu-btn.opened .bar3 {
     -webkit-transform: rotate(45deg) translate(-8px, -8px);
     transform: rotate(45deg) translate(-8px, -8px);
+    background-color:white;
 }

@@ -41,12 +41,19 @@ public class Game
     /// <summary> Marks the current word as guessed and prepares a new one </summary>
     public void GuessWord()
     {
-        ScoreBoard.AddPoints(CurrentPlayer.Name);
+        ScoreBoard.AddPoint(CurrentPlayer.Name);
         Words.RemoveFromRound(CurrentWord);
         CurrentWord = Words.GetRandomWord();
 
         if (CurrentWord == null)
             TurnTimer.Cancel();
+    }
+
+    public void UndoGuess()
+    {
+        ScoreBoard.RemovePoint(CurrentPlayer.Name);
+        var word = Words.RevertRemove();
+        CurrentWord = word;
     }
 
     /// <summary> Begins the turn of the current player. The task resolves / finished when the turn is over (has ended) </summary>
