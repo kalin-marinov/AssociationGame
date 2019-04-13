@@ -232,13 +232,14 @@
         }
 
         canUndo = true;
-        await Sounds.Success();
+        await PlaySound.Success();
     }
 
-    void Undo()
+    async Task Undo()
     {
        game.UndoGuess();
        canUndo = false; 
+       await PlaySound.Buzzer();
     }
 
     void StartNextRound()

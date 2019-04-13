@@ -140,7 +140,7 @@
                 this.wordForPlayer = wordsManager.GetWordsCount(currentPlayer);
                 newWord = null;
                 invalidWord = false;
-                await Sounds.Success();
+                await PlaySound.Success();
             }
             catch (System.Exception err)
             {

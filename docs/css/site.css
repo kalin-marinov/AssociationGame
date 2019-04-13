@@ -1,0 +1,226 @@
+﻿html,
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: rgb(61, 57, 70);
+}
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* Players table */
+
+.players ul li {
+    padding: 10px 0;
+    cursor: pointer;
+    display: flex;
+    font-size: 28px;
+}
+
+.players ul li span {
+    line-height: 32px;
+    min-width:60px;
+}
+
+.players ul li img {
+    height: 32px;
+}
+
+.players .usr-icon {
+    width: 40px;
+    margin-right: 16px;
+}
+
+.players .usr-name {
+    flex-grow: 1;
+}
+
+.players ul li.selected {
+    background: lightblue;
+}
+
+.players form {
+    margin: 30px 0px;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+input {
+    min-width: 200px;
+    border-radius: 2px;
+    padding: 0px 20px;
+    border: none;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    line-height: 70px;
+}
+
+input.invalid{
+    box-shadow: 0px 0px 5px 1px #bf0808;
+}
+
+button {
+    padding: 0px 10px;
+    min-width: 100px;
+    background: #25AE88;
+    color: white;
+    border: none;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 60px;
+}
+
+button:focus {
+    outline: 0;
+}
+
+button.add-btn {
+    font-size: 40px;
+}
+
+button.remove-btn {
+    background: red;
+    min-width: 40px;
+    line-height: 40px;
+    font-weight:bold;
+}
+
+button.preview-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button.preview-btn.active {
+    box-shadow: inset 1px 1px 15px 1px #333;
+}
+
+button.preview-btn img {
+    height: 40px;
+}
+
+button.clear-btn {
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 20px;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px gray;
+    transition: .2s all;
+}
+
+button.clear-btn:active {
+    transform: rotateZ(-180deg);
+}
+
+button.success-btn {
+    display: flex;
+    font-size: 40px;
+    height: 100px;
+    line-height: 100px;
+    width: 400px;
+}
+
+#setup .success-btn {
+    position: absolute;
+    bottom: 5vh;
+    left: 30vw;
+    right: 0;
+    margin: auto;
+}
+
+
+h1 {
+    font-size: 42px;
+}
+
+h2 {
+    font-size: 28px;
+}
+
+h3 {
+    font-size: 24px;
+}
+
+form {
+    display: flex;
+}
+
+form input {
+    margin-right: 12px;
+    flex-grow: 1;
+}
+
+form button:not(:last-of-type) {
+    margin-right: 12px;
+}
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+
+.right {
+    float: right;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* Menu button: */
+
+.menu-btn {
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    z-index: 100;
+}
+
+.bar1,
+.bar2,
+.bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.menu-btn.opened .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-9px, 6px);
+    background-color:white;
+}
+
+.menu-btn.opened .bar2 {
+    opacity: 0;
+    background-color:white;
+}
+
+.menu-btn.opened .bar3 {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px);
+    transform: rotate(45deg) translate(-8px, -8px);
+    background-color:white;
+}
