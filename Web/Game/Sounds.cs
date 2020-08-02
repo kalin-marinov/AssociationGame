@@ -2,17 +2,23 @@
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-public static class PlaySound
+public class PlaySound
 {
+    private readonly IJSRuntime jsRuntime;
 
-    public static Task Success()
+    public PlaySound(IJSRuntime jsRuntime)
     {
-        return JSRuntime.Current.InvokeAsync<bool>("playSound", "/sounds/success.mp3");
+        this.jsRuntime = jsRuntime;
     }
 
-    public static Task Buzzer()
+    public ValueTask Success()
     {
-        return JSRuntime.Current.InvokeAsync<bool>("playSound", "/sounds/buzzer.mp3");
+        return this.jsRuntime.InvokeVoidAsync("playSound", "/sounds/success.mp3");
+    }
+
+    public ValueTask Buzzer()
+    {
+        return this.jsRuntime.InvokeVoidAsync("playSound", "/sounds/buzzer.mp3");
     }
 
 }

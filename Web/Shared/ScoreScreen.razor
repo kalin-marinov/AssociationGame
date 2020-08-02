@@ -15,14 +15,13 @@
 
  </table>
 
-@functions {
-    
+@code {
     [Parameter]
-    IEnumerable<TeamScore> Scores {get; set;}
+    public IEnumerable<TeamScore> Scores { get; set; }
 
-    protected override void OnInit()
+    protected override void OnParametersSet()
     {
-        if(Scores == null) 
-         Scores = Enumerable.Empty<TeamScore>();
+        if (Scores == null)
+            Scores = Enumerable.Empty<TeamScore>();
     }
 }

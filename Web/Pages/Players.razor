@@ -1,8 +1,7 @@
 @page "/players"
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-
 @inject LocalStorage Storage
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 
 
 <style>
@@ -49,15 +48,15 @@
                             @item.Name
                         </span>
                         <span>
-                            <button class="remove-btn" onclick="@(() => RemovePlayer(item.Name))" > X </button>
+                            <button class="remove-btn" @onclick="@(() => RemovePlayer(item.Name))" > X </button>
                         </span>
                     </li>
                 }
             </ul>
         }
 
-        <form onsubmit="@AddPlayer">
-            <input bind="@newPlayerName" placeholder="Player name" />
+        <form @onsubmit="AddPlayer">
+            <input @bind="newPlayerName" placeholder="Player name" />
             <button type="submit" class="add-btn" > + </button>
         </form>
     </section>
@@ -65,20 +64,18 @@
 
     @if(gameData.PlayersValid)
     {
-        <button onclick="@Save" class="success-btn"> 
+        <button @onclick="Save" class="success-btn"> 
             <img src="/img/success.svg" />
             <span> Done </span>
         </button>
     }
 </section>
 
-
-@functions{
-    
+@code{
     string newPlayerName;
     GameData gameData;
-    
-    override protected void OnInit()
+
+    override protected void OnParametersSet()
     {
         var storedPlayers = Storage.GetItem<IEnumerable<Player>>("players");
         this.gameData = new GameData(storedPlayers ?? Enumerable.Empty<Player>());
@@ -99,7 +96,7 @@
     void Save()
     {
         Storage.SetItem("players", gameData.Players);
-        UriHelper.NavigateTo("/words");
+        NavigationManager.NavigateTo("/words");
     }
 }
 

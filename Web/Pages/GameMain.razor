@@ -1,9 +1,12 @@
 ﻿@page "/game"
-@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-@using System.Threading;
 
-@inject LocalStorage Storage
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@using Microsoft.JSInterop;
+
+@inject LocalStorage Storage;
+@inject NavigationManager NavigationManager;
+@inject PlaySound Sounds;
+@inject IJSRuntime JSRuntime
 
 <style>
     #game {
@@ -127,7 +130,7 @@
         {
             <div id="guess-centered">
                 <h3> Round @game?.CurrentRound - Over! </h3>
-                <button class="start-btn" onclick="@StartNextRound" hidden="@(!roundEnded)"> <img src="/img/play-button.svg" /> </button>
+                <button class="start-btn" @onclick="StartNextRound" hidden="@(!roundEnded)"> <img src="/img/play-button.svg" /> </button>
             </div>
         }
         else
@@ -135,7 +138,7 @@
             <div id="guess-centered">
                 <p> Round @game?.CurrentRound - Fight! </p>
 
-                <div class="menu-btn @(showPlayers ? "opened" : null)" onclick="@(() => showPlayers = !showPlayers)"> 
+                <div class="menu-btn @(showPlayers ? "opened" : null)" @onclick="@(() => showPlayers = !showPlayers)"> 
                     <div class="bar1"></div>
                     <div class="bar2"></div>
                     <div class="bar3"></div>
@@ -157,38 +160,38 @@
                     <p class="timer" > @remainingTime.ToString("mm':'ss") </p>
                 }
 
-                <button class="undo-btn" onclick="@Undo" hidden="@(!canUndo)"> <img src="/img/undo.svg" />  </button>
+                <button class="undo-btn" @onclick="Undo" hidden="@(!canUndo)"> <img src="/img/undo.svg" />  </button>
             
                 <div class="buttons">
-                    <button class="start-btn" onclick="@HandleTurn" hidden="@isWorking"> <img src="/img/play-button.svg" /> </button>
-                    <button class="guess-btn" onclick="@Guess" hidden="@(!isWorking)">  <img src="/img/success.svg" /> </button>
+                    <button class="start-btn" @onclick="HandleTurn" hidden="@isWorking"> <img src="/img/play-button.svg" /> </button>
+                    <button class="guess-btn" @onclick="Guess" hidden="@(!isWorking)">  <img src="/img/success.svg" /> </button>
                 </div>
             </div>
         }
     </section>
     <aside id="scores" style="width:@(showPlayers ? "600px" : "0")" >
-        <ScoreScreen Scores="@game?.GetScores()" />
+        <ScoreScreen Scores="game?.GetScores()" />
     </aside>
 </section>
 
-@functions {
+@code {
     bool isWorking = false;
     bool roundEnded = false;
     bool showPlayers = false;
     bool canUndo = false;
 
     Game game;
-    
+
     TimeSpan remainingTime;
     TimeSpan tickRate = TimeSpan.FromMilliseconds(950);
 
-    protected override void OnInit()
+    protected override void OnParametersSet()
     {
         var words = Storage.GetItem<string[]>("all-words");
         var players = Storage.GetItem<Player[]>("players");
 
-        if(words == null || players == null)
-            UriHelper.NavigateTo("/words");
+        if (words == null || players == null)
+            NavigationManager.NavigateTo("/words");
 
         else game = new Game(words, players);
     }
@@ -205,7 +208,7 @@
 
         await ResizeWord();
 
-        while(remainingTime.TotalMilliseconds > 0 && !roundEnded)
+        while (remainingTime.TotalMilliseconds > 0 && !roundEnded)
         {
             await Task.Delay(tickRate);
             remainingTime = end.Subtract(DateTime.Now); //remainingTime.Subtract(tickRate);
@@ -221,25 +224,26 @@
 
     async Task Guess()
     {
-        if(remainingTime.TotalSeconds < 1)
+        if (remainingTime.TotalSeconds < 1)
             return;
 
         game.GuessWord();
-    
-        if(game.CurrentWord == null){
+
+        if (game.CurrentWord == null)
+        {
             Console.WriteLine("End of round");
             roundEnded = true;
         }
 
         canUndo = true;
-        await PlaySound.Success();
+        await Sounds.Success();
     }
 
     async Task Undo()
     {
-       game.UndoGuess();
-       canUndo = false; 
-       await PlaySound.Buzzer();
+        game.UndoGuess();
+        canUndo = false;
+        await Sounds.Buzzer();
     }
 
     void StartNextRound()
@@ -249,8 +253,8 @@
         remainingTime = game.TurnTime;
     }
 
-    Task ResizeWord()
+    ValueTask ResizeWord()
     {
-        return JSRuntime.Current.InvokeAsync<bool>("deferFit", "#word-text");
+        return JSRuntime.InvokeVoidAsync("deferFit", "#word-text");
     }
 }

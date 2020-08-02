@@ -1,7 +1,11 @@
 @page "/words"
+
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+
 @inject LocalStorage Storage
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
+@inject PlaySound PlaySound;
+
 
 <style>
     #setup {
@@ -46,7 +50,7 @@
                 <ul>
                     @foreach (var item in wordsManager.Players)
                     {
-                        <li class="@(CurrentPlayer == item.Name ? "selected" : null)" onclick="@(() => CurrentPlayer = item.Name)"> 
+                        <li class="@(CurrentPlayer == item.Name ? "selected" : null)" @onclick="@(()=> CurrentPlayer = item.Name)"> 
                              <span class="usr-icon">
                                 <img src="/img/user2.svg" />
                              </span>
@@ -72,23 +76,23 @@
             <h1 class="right" > @wordForPlayer / @wordsManager.WORDS_PER_PLAYER </h1>
             <h1> @CurrentPlayer </h1>
 
-            <form id="player-words" onsubmit="@AddWord" >
+            <form id="player-words" @onsubmit="AddWord" >
                 @if(wordForPlayer < wordsManager.WORDS_PER_PLAYER)
                 {
-                    <input class="@(invalidWord ? "invalid" : null )"  bind="@newWord" placeholder="..." type="@(hideInput ? "password" : "text")" />
-                    <button class="preview-btn @(!hideInput ? "active" : null)" type="button" onclick="@(() => hideInput = !hideInput)" > 
+                    <input class="@(invalidWord ? "invalid" : null )"  @bind="newWord" placeholder="..." type="@(hideInput ? "password" : "text")" />
+                    <button class="preview-btn @(!hideInput ? "active" : null)" type="button" @onclick="@(() => hideInput = !hideInput)" > 
                         <img src="/img/eye.svg" />    
                     </button>
                     <button class="add-btn" type="submit"> + </button>
                 }
             </form>
-            <button class="clear-btn" onclick="@ClearWords"  >  <img src="/img/broom.svg" />  </button>
+            <button class="clear-btn" @onclick="ClearWords">  <img src="/img/broom.svg" />  </button>
         }
-    </section>
+    </section>  
 
    @if(wordsManager.WordsValid)
    {
-        <button onclick="@SaveGameData" class="success-btn"> 
+        <button @onclick="SaveGameData" class="success-btn"> 
             <img src="/img/success.svg" />
             <span> Done </span>
         </button>
@@ -96,35 +100,33 @@
 </section>
 
 
-
-
-
-
-@functions {
+@code {
     GameData wordsManager;
 
     private string currentPlayer;
     public string CurrentPlayer
     {
-        get { return currentPlayer;}
+        get { return currentPlayer; }
         set
         {
             this.currentPlayer = value;
             this.wordForPlayer = wordsManager.GetWordsCount(value);
         }
     }
-    
+
     int wordForPlayer;
     string newWord;
     bool hideInput = true;
     bool invalidWord = false;
 
-    override protected void OnInit()
+
+
+    override protected void OnParametersSet()
     {
         var storedPlayers = Storage.GetItem<IEnumerable<Player>>("players");
 
-        if(storedPlayers == null || !storedPlayers.Any())
-          UriHelper.NavigateTo("/players");
+        if (storedPlayers == null || !storedPlayers.Any())
+            NavigationManager.NavigateTo("/players");
 
         else
             this.wordsManager = new GameData(storedPlayers ?? Enumerable.Empty<Player>());
@@ -132,7 +134,7 @@
 
     async Task AddWord()
     {
-        if(!string.IsNullOrWhiteSpace(newWord))
+        if (!string.IsNullOrWhiteSpace(newWord))
         {
             try
             {
@@ -153,7 +155,7 @@
     void SaveGameData()
     {
         Storage.SetItem("all-words", wordsManager.GetWords());
-        UriHelper.NavigateTo("/game");
+        NavigationManager.NavigateTo("/game");
     }
 
     void ClearWords()
@@ -161,5 +163,5 @@
         wordsManager.ClearWords(CurrentPlayer);
         wordForPlayer = 0;
         invalidWord = false;
-    }    
+    }
 }

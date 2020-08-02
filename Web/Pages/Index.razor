@@ -1,0 +1,23 @@
+﻿@page "/"
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
+@inject NavigationManager NavigationManager
+
+<h1>Some words Game</h1>
+
+<button @onclick="Start"> Start </button>
+<button @onclick="ClearData"> Clear previous date </button>
+
+@code{
+
+    void Start()
+    {
+        NavigationManager.NavigateTo("/players");
+    }
+
+    void ClearData()
+    {
+        Storage.Clear();
+    }
+
+}
