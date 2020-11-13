@@ -16,29 +16,21 @@ app {
 
 /* Players table */
 
-.players ul li {
-    padding: 10px 0;
-    cursor: pointer;
-    display: flex;
-    font-size: 28px;
+.players ul {
+    display: grid;
+    gap:20px;
 }
 
-.players ul li span {
-    line-height: 32px;
-    min-width:60px;
+.players ul li {
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 40px 1fr 60px;
+    gap: 20px;
+    font-size: 28px;
 }
 
 .players ul li img {
     height: 32px;
-}
-
-.players .usr-icon {
-    width: 40px;
-    margin-right: 16px;
-}
-
-.players .usr-name {
-    flex-grow: 1;
 }
 
 .players ul li.selected {
@@ -61,6 +53,7 @@ table {
 }
 
 input {
+    outline: none ;
     min-width: 200px;
     border-radius: 2px;
     padding: 0px 20px;

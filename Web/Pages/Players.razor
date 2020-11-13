@@ -5,50 +5,48 @@
 
 
 <style>
-    #players-setup{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
+    #players-setup {
+        display: grid;
+        justify-content: center;
         padding: 40px;
-        min-height:calc(100vh - 80px);
+        min-height: calc(100vh - 80px);
+        background: #eae9e4 url("/img/puzzle.svg");
         background-size: 90px;
-
-        background-color: #eae4ca;
-        background-image: url("/img/puzzle.svg");
-
+        grid-template-columns: 40vw;
+        grid-template-rows: 1fr 200px;
     }
 
-    #list-centered{
-        width:80%;
-        max-width: 800px;
-        min-width: 330px;
+    #players-setup button {
+        justify-self: center;
     }
 
-    #list-centered ul li{
+    #list-centered ul li {
         text-shadow: 1px 1px 2px #c1c1c1;
     }
 
+    #list-centered li span:last-of-type {
+        justify-self: end;
+    }
 </style>
 
 <section id="players-setup">
 
     <section id="list-centered" class="players">
 
-      @if(gameData.Players.Any())
+        @if (gameData.Players.Any())
         {
             <ul>
                 @foreach (var item in gameData.Players)
                 {
-                    <li> 
+                    <li>
                         <span class="usr-icon">
                             <img src="/img/user2.svg" />
                         </span>
-                        <span class="usr-name"> 
+                        <span class="usr-name">
                             @item.Name
                         </span>
                         <span>
-                            <button class="remove-btn" @onclick="@(() => RemovePlayer(item.Name))" > X </button>
+                            <button class="remove-btn" @onclick="@(() => RemovePlayer(item.Name))"> X </button>
                         </span>
                     </li>
                 }
@@ -57,21 +55,21 @@
 
         <form @onsubmit="AddPlayer">
             <input @bind="newPlayerName" placeholder="Player name" />
-            <button type="submit" class="add-btn" > + </button>
+            <button type="submit" class="add-btn"> + </button>
         </form>
     </section>
 
 
-    @if(gameData.PlayersValid)
+    @if (gameData.PlayersValid)
     {
-        <button @onclick="Save" class="success-btn"> 
+        <button @onclick="Save" class="success-btn">
             <img src="/img/success.svg" />
             <span> Done </span>
         </button>
     }
-</section>
+    </section>
 
-@code{
+    @code{
     string newPlayerName;
     GameData gameData;
 
@@ -99,4 +97,3 @@
         NavigationManager.NavigateTo("/words");
     }
 }
-
